@@ -9,7 +9,7 @@ void printClock(int procesos, int *estados, char *proceso)
         printf("%d, ", estados[i]);
         i++;
     }
-    printf("%d)\n", estados[procesos]);
+    printf("%d)\n", estados[procesos - 1]);
 }
 
 void addToClock(int procesos, int *estados, char *proceso)
