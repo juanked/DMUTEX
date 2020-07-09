@@ -97,9 +97,9 @@ int main(int argc, char *argv[])
         /* Habra que guardarlo en algun sitio */
 
         if (!strcmp(proc, argv[1]))
-        { /* Este proceso soy yo */
+        { /* Este proceso soy yo *
         }
-
+        
         Proceso procAux;
         procAux.proccess = proc;
         procAux.dir = (char *)malloc(strlen(dirUDP));
