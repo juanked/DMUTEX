@@ -1,8 +1,9 @@
 #include <stdio.h>
 
-typedef struct clock{
+typedef struct clock
+{
     int *listaProcesos;
 } reloj;
 
-void printClock(int procesos, int *estados, char *proceso);
-void addToClock(int procesos, int *estados, char *proceso);
+void addToClock(int procesos, char *proceso, int *estados);
+void printClock(int procesos, char *proceso, int *estados);
