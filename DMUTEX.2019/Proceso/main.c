@@ -199,13 +199,16 @@ int main(int argc, char *argv[])
                 close(socketUDP);
                 return -1;
             }
+
             if (buffer[0] == MSG)
                 printf("%s: RECEIVE(MSG,%s)\n", proceso, memProc[(int)buffer[1]].proccess);
             else if (buffer[0]==LOCK)
                 printf("%s: RECEIVE(LOCK,%s)\n", proceso, memProc[(int)buffer[1]].proccess);
-
             else
                 printf("%s: RECEIVE(OK,%s)\n", proceso, memProc[(int)buffer[1]].proccess);
+            
+            addToClock(procesoYo, proceso, relojPract.listaProcesos);
+
             int relojAux[indiceProc];
             for (int i = 0; i < indiceProc; i++)
             {
@@ -362,12 +365,13 @@ int addSection(char *nombre)
     aux.nombre = (char *)malloc(strlen(nombre));
     strcpy(aux.nombre, nombre);
     aux.nPeticionarios = 0;
-    aux.peticiones = (int *)malloc(strlen(nombre));
+    aux.peticiones = (int *)malloc(sizeof(int));
     aux.okays = indiceProc - 1;
     // TODO: añadir más cosas si hacen falta a RegiónCrítica
     memReg[indiceSecc++] = aux;
     memReg = (RegionCritica *)realloc(memReg, (indiceSecc + 1) * sizeof(struct regiones));
     // TODO: comprobar si está bien
+    
     return indiceSecc - 1;
 }
 
