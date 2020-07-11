@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
                 relojAux[i] = buffer[i + 2];
             }
             int auxOrden = 0;
-            int auxIguales = 0;
+            int auxIguales = 1;
             for (int i = 0; i < indiceProc; i++)
             {
                 if (relojAux[i] < relojPract.listaProcesos[i])
@@ -190,7 +190,7 @@ int main(int argc, char *argv[])
                     auxIguales = 0;
                 }
                 else if (relojAux[i] == relojPract.listaProcesos[i])
-                    auxIguales = auxIguales && 1;
+                    auxIguales = auxIguales && 1; //si siempre es 1, es que todos son
                 else
                     auxIguales = 0;
                 // TODO: Revisar que pasa si todos los elementos de los array son iguales
@@ -292,13 +292,13 @@ int main(int argc, char *argv[])
             char stAux[strlen(par)];
             strcpy(stAux, par);
 
-            // TODO: Enviar
+            sendUnlock(stAux);
 
             int aux = sectionToInt(stAux);
             //TODO: ver que es idSolicitantes y mutex y añadirlos a memReg
 
-            // memReg[aux].idSolicitantes
-            // memReg[aux].mutex
+            memReg[aux].peticiones = (int *)malloc(sizeof(int));
+            memReg[aux].mutex = 0;
         }
 
         else if (strcmp(line, "FINISH\n") == 0)
@@ -333,7 +333,7 @@ int addSection(char *nombre)
     aux.nombre = (char *)malloc(strlen(nombre));
     strcpy(aux.nombre, nombre);
     aux.nPeticionarios = 0;
-    aux.peticiones = (int * )malloc(strlen(nombre));
+    aux.peticiones = (int *)malloc(strlen(nombre));
     aux.okays = indiceProc - 1;
     // TODO: añadir más cosas si hacen falta a RegiónCrítica
     memReg[indiceSecc++] = aux;
