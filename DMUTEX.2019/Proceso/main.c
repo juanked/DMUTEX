@@ -5,7 +5,6 @@
  *    - Para desarrollar las funciones de mensajes, reloj y
  *      gestión del bucle de tareas se recomienda la implementación
  *      de las mismas en diferentes ficheros.
- *      Se han implementado en clock.c y clock.h
  */
 
 /* Nombre: David Cristóbal Pascual
@@ -18,16 +17,34 @@
 #include <strings.h>
 #include <arpa/inet.h>
 
-#include "clock.h"
+// #include "clock.h"
 
 #define MSG 0
 #define LOCK 1
 #define OK 2
 
-int puertoUDP, socketUDP;
+int sectionToInt(char *nombre);
+void pedirSeccion(int identificador);
+int addSection(char *nombre);
+void waitProc(int identificadorSeccion, int proceso);
+void sendMessageTo(char *parametro);
+void sendReceive(char *nombre);
+void sendLock(char *seccion);
+void sendUnlock(char *seccion);
+
+void addToClock(int procesos, char *proceso, int *estados);
+void printClock(int procesos, char *proceso, int *estados);
+
+int puertoUDP,
+    socketUDP;
 int indiceProc = 0;
 int indiceSecc = 0;
 char *proceso;
+
+typedef struct clock
+{
+    int *listaProcesos;
+} reloj;
 
 typedef struct procesos
 {
@@ -457,4 +474,26 @@ void sendUnlock(char *seccion)
 
         printf("%s: SEND(OK,%s)", proceso, memProc[memReg[auxSec].peticiones[i]].proccess);
     }
+}
+
+/*
+FUNCIONES RELOJ
+*/
+
+void addToClock(int procesos, char *proceso, int *estados)
+{
+    estados[procesos]++;
+    printf("%s: TICK\n", proceso);
+}
+
+void printClock(int procesos, char *proceso, int *estados)
+{
+    printf("%s: LC[", proceso);
+    int i = 0;
+    while (i < procesos - 1)
+    {
+        printf("%d, ", estados[i]);
+        i++;
+    }
+    printf("%d]\n", estados[procesos - 1]);
 }
