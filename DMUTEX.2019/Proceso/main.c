@@ -41,6 +41,13 @@ int indiceProc = 0;
 int indiceSecc = 0;
 char *proceso;
 
+// typedef enum
+// {
+//     MSG = 0,
+//     LOCK = 1,
+//     OK = 2
+// } msg_type;
+
 typedef struct clock
 {
     int *listaProcesos;
@@ -49,13 +56,13 @@ typedef struct clock
 typedef struct procesos
 {
     int port;
-    char *dir, *proccess
+    char *dir, *proccess;
 } Proceso;
 
 typedef struct regiones
 {
     char *nombre;
-    int identificador, *peticiones, nPeticionarios, okays;
+    int *peticiones, nPeticionarios, okays;
     int pedido, mutex;
 } RegionCritica;
 
@@ -130,23 +137,24 @@ int main(int argc, char *argv[])
 
     for (; fgets(line, 80, stdin);)
     {
-        if (strcmp(line, "START\n") == 0)
+        if (!strcmp(line, "START\n"))
             break;
 
         sscanf(line, "%[^:]: %d", proc, &port);
         /* Habra que guardarlo en algun sitio */
 
-        if (strcmp(proc, argv[1]) == 0)
+        if (!strcmp(proc, argv[1]))
         { /* Este proceso soy yo */
             procesoYo = indiceProc;
         }
 
         Proceso procAux;
-        procAux.proccess = proc;
+        procAux.port = port; 
+        // procAux.proccess = proc;
         procAux.dir = (char *)malloc(strlen(dirUDP));
         strcpy(procAux.dir, dirUDP);
-        procAux.port = (char *)malloc(strlen(port));
-        strcpy(procAux.port, port);
+        procAux.proccess = (char *)malloc(strlen(proc));
+        strcpy(procAux.proccess, proc);
         memProc[indiceProc++] = procAux;
 
         memProc = (Proceso *)realloc(memProc, (indiceProc + 1) * sizeof(struct procesos));
@@ -168,7 +176,7 @@ int main(int argc, char *argv[])
     for (; fgets(line, 80, stdin);)
     {
         sscanf(line, "%s %s", act, par);
-        buffer = (char *)malloc((sizeof(int) * indiceProc + 2)) + strlen(par);
+        buffer = (char *)malloc((sizeof(int) * (indiceProc + 2)) + strlen(par));
 
         if (strcmp(line, "EVENT\n") == 0)
         {
@@ -176,7 +184,7 @@ int main(int argc, char *argv[])
         }
         else if (strcmp(line, "GETCLOCK\n") == 0)
         {
-            printClock(procesoYo, proceso, relojPract.listaProcesos);
+            printClock(indiceProc, proceso, relojPract.listaProcesos);
         }
         else if (strcmp(act, "MESSAGETO") == 0)
         {
@@ -185,13 +193,19 @@ int main(int argc, char *argv[])
         }
         else if (strcmp(line, "RECEIVE\n") == 0)
         {
-            if (read(socketUDP, buffer, sizeof(buffer)))
+            if (read(socketUDP, buffer, sizeof(buffer))<0)
             {
                 perror("Error read() en RECEIVE\n");
                 close(socketUDP);
                 return -1;
             }
+            if (buffer[0] == MSG)
+                printf("%s: RECEIVE(MSG,%s)\n", proceso, memProc[(int)buffer[1]].proccess);
+            else if (buffer[0]==LOCK)
+                printf("%s: RECEIVE(LOCK,%s)\n", proceso, memProc[(int)buffer[1]].proccess);
 
+            else
+                printf("%s: RECEIVE(OK,%s)\n", proceso, memProc[(int)buffer[1]].proccess);
             int relojAux[indiceProc];
             for (int i = 0; i < indiceProc; i++)
             {
@@ -219,24 +233,23 @@ int main(int argc, char *argv[])
             for (int i = 0; i < indiceProc; i++)
             {
                 if (relojPract.listaProcesos[i] < buffer[i + 2])
-                    relojPract.listaProcesos = buffer[i + 2];
+                    relojPract.listaProcesos[i] = buffer[i + 2];
             }
-            int aux = (int)buffer[1];
-            if (buffer[0] == MSG)
-                printf("%s: RECEIVE(MSG,%)\n", proceso, memProc[aux].proccess);
-            else if (buffer[0] == LOCK)
-            {
-                printf("%s: RECEIVE(LOCK,%)\n", proceso, memProc[aux].proccess);
+            // int aux = (int)buffer[1];
 
-                char nombre[strelen(&buffer[indiceProc + 2])];
+            if (buffer[0] == LOCK)
+            {
+                
+
+                char nombre[strlen(&buffer[indiceProc + 2])];
                 strcpy(nombre, &buffer[indiceProc + 2]);
 
                 int aux = sectionToInt(nombre);
                 if (aux == -1)
                 {
                     addToClock(procesoYo, proceso, relojPract.listaProcesos);
-                    addSection(nombre);
                     sendReceive(nombre);
+                    addSection(nombre);
                 }
                 else
                 {
@@ -251,7 +264,7 @@ int main(int argc, char *argv[])
                             sendReceive(nombre);
                             break;
                         case 1:
-                            waitProc(aux, buffer);
+                            waitProc(aux, buffer[1]);
                             break;
                         case 2:
                             if (aux > (int)buffer[1])
@@ -274,9 +287,8 @@ int main(int argc, char *argv[])
                     }
                 }
             }
-            else
+            else if (buffer [0]==OK)
             {
-                printf("%s: RECEIVE(OK,%)\n", proceso, memProc[aux].proccess);
                 int aux = sectionToInt(&buffer[indiceProc + 2]);
                 memReg[aux].okays--;
                 if (memReg[aux].okays == 0)
@@ -286,8 +298,8 @@ int main(int argc, char *argv[])
                     printf("%s: MUTEX(%s)", proceso, &buffer[indiceProc + 2]);
                 }
             }
-
-            addToClock(procesoYo, proceso, relojPract.listaProcesos);
+            // TODO: revisar por qué puse esto
+            // addToClock(procesoYo, proceso, relojPract.listaProcesos);
         }
         else if (strcmp(act, "LOCK") == 0)
         {
@@ -375,7 +387,7 @@ void sendMessageTo(char *parametro)
 
     for (int i = 0; i < indiceProc; i++)
     {
-        if (strcmp(memProc[i].proccess, parametro))
+        if (strcmp(memProc[i].proccess, parametro)==0)
         {
             dirAux.sin_port = memProc[i].port;
             break;
@@ -391,7 +403,7 @@ void sendMessageTo(char *parametro)
         return -1;
     }
 
-    printf("%s: SEND(MSG,%s)", proceso, parametro);
+    printf("%s: SEND(MSG,%s)\n", proceso, parametro);
 }
 
 void sendReceive(char *nombre)
@@ -492,8 +504,15 @@ void printClock(int procesos, char *proceso, int *estados)
     int i = 0;
     while (i < procesos - 1)
     {
-        printf("%d, ", estados[i]);
+        printf("%d,", estados[i]);
         i++;
     }
     printf("%d]\n", estados[procesos - 1]);
+
+    // for (i = 0; i < procesos;i++){
+    //     printf("%d", estados[i]);
+    //     if (i != procesos - 1)
+    //         printf(",");
+    // }
+    // printf("]\n");
 }
