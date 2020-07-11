@@ -329,9 +329,13 @@ int addSection(char *nombre)
 {
     RegionCritica aux;
     aux.pedido = 0;
+    aux.mutex = 0;
     aux.nombre = (char *)malloc(strlen(nombre));
-    // TODO: añadir más cosas si hacen falta a RegiónCrítica
     strcpy(aux.nombre, nombre);
+    aux.nPeticionarios = 0;
+    aux.peticiones = (int * )malloc(strlen(nombre));
+    aux.okays = indiceProc - 1;
+    // TODO: añadir más cosas si hacen falta a RegiónCrítica
     memReg[indiceSecc++] = aux;
     memReg = (RegionCritica *)realloc(memReg, (indiceSecc + 1) * sizeof(struct regiones));
     // TODO: comprobar si está bien
