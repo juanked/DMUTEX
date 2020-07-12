@@ -16,6 +16,7 @@
 #include <string.h>
 #include <strings.h>
 #include <arpa/inet.h>
+#include <unistd.h>
 
 // #include "clock.h"
 
@@ -85,6 +86,7 @@ int main(int argc, char *argv[])
     memReg = (RegionCritica *)malloc(sizeof(struct regiones));
     struct sockaddr_in dir;
     proceso = argv[1];
+    Proceso procAux;
 
     if (argc < 2)
     {
@@ -103,7 +105,7 @@ int main(int argc, char *argv[])
     if ((socketUDP = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
     {
         perror("No se ha podido crear el socket UDP\n");
-        close(socketUDP);
+        // close(socketUDP);
         return -1;
     }
 
@@ -116,22 +118,22 @@ int main(int argc, char *argv[])
     // if (bind(socketUDP, (struct sockaddr *)&dir, sizeof(struct sockaddr_in)) != 0)
     {
         perror("Error en el bind\n");
-        close(socketUDP);
+        // close(socketUDP);
         return -1;
     }
 
-    struct sockaddr_in socketStor;
-    socklen_t socketLen = sizeof(socketStor);
+    // struct sockaddr_in socketStor;
+    socklen_t socketLen = sizeof(dir);
 
-    if (getsockname(socketUDP, (struct sockaddr *)&socketStor, (socklen_t *)&socketLen) == -1)
+    if (getsockname(socketUDP, (struct sockaddr *)&dir, (socklen_t *)&socketLen) == -1)
     {
         perror("Error en getsockname()\n");
-        close(socketUDP);
+        // close(socketUDP);
         return -1;
     }
 
-    puertoUDP = socketStor.sin_port;
-    dirUDP = inet_ntoa(socketStor.sin_addr);
+    puertoUDP = dir.sin_port;
+    dirUDP = inet_ntoa(dir.sin_addr);
 
     fprintf(stdout, "%s: %d\n", argv[1], puertoUDP);
 
@@ -148,21 +150,13 @@ int main(int argc, char *argv[])
             procesoYo = indiceProc;
         }
 
-        Proceso procAux;
-        procAux.port = port; 
-        // procAux.proccess = proc;
+        procAux.port = port;
         procAux.dir = (char *)malloc(strlen(dirUDP));
         strcpy(procAux.dir, dirUDP);
         procAux.proccess = (char *)malloc(strlen(proc));
         strcpy(procAux.proccess, proc);
         memProc[indiceProc++] = procAux;
-
         memProc = (Proceso *)realloc(memProc, (indiceProc + 1) * sizeof(struct procesos));
-        if (memProc == NULL)
-        {
-            perror("Fallo en el realloc de memProc");
-            return -1;
-        }
     }
 
     /* Inicializar Reloj */
@@ -178,35 +172,36 @@ int main(int argc, char *argv[])
         sscanf(line, "%s %s", act, par);
         buffer = (char *)malloc((sizeof(int) * (indiceProc + 2)) + strlen(par));
 
-        if (strcmp(line, "EVENT\n") == 0)
+        if (strcmp(line, "FINISH\n") == 0)
+            break;
+
+        else if (strcmp(line, "EVENT\n") == 0)
         {
             addToClock(procesoYo, proceso, relojPract.listaProcesos);
         }
+
         else if (strcmp(line, "GETCLOCK\n") == 0)
         {
             printClock(indiceProc, proceso, relojPract.listaProcesos);
         }
-        else if (strcmp(act, "MESSAGETO") == 0)
-        {
-            addToClock(procesoYo, proceso, relojPract.listaProcesos);
-            sendMessageTo(par);
-        }
+
         else if (strcmp(line, "RECEIVE\n") == 0)
         {
-            if (read(socketUDP, buffer, sizeof(buffer))<0)
+            //char *tipo;
+            if (read(socketUDP, buffer, sizeof(buffer)) < 0)
             {
                 perror("Error read() en RECEIVE\n");
-                close(socketUDP);
+                // close(socketUDP);
                 return -1;
             }
 
             if (buffer[0] == MSG)
                 printf("%s: RECEIVE(MSG,%s)\n", proceso, memProc[(int)buffer[1]].proccess);
-            else if (buffer[0]==LOCK)
+            else if (buffer[0] == LOCK)
                 printf("%s: RECEIVE(LOCK,%s)\n", proceso, memProc[(int)buffer[1]].proccess);
             else
                 printf("%s: RECEIVE(OK,%s)\n", proceso, memProc[(int)buffer[1]].proccess);
-            
+
             addToClock(procesoYo, proceso, relojPract.listaProcesos);
 
             int relojAux[indiceProc];
@@ -242,8 +237,7 @@ int main(int argc, char *argv[])
 
             if (buffer[0] == LOCK)
             {
-                
-
+                // tipo = "LOCK";
                 char nombre[strlen(&buffer[indiceProc + 2])];
                 strcpy(nombre, &buffer[indiceProc + 2]);
 
@@ -257,7 +251,9 @@ int main(int argc, char *argv[])
                 else
                 {
                     if (memReg[aux].mutex == 1)
+                    {
                         waitProc(aux, buffer[1]);
+                    }
                     else if (memReg[aux].pedido == 1)
                     {
                         switch (auxOrden)
@@ -290,35 +286,40 @@ int main(int argc, char *argv[])
                     }
                 }
             }
-            else if (buffer [0]==OK)
+            else if (buffer[0] == OK)
             {
+
                 int aux = sectionToInt(&buffer[indiceProc + 2]);
                 memReg[aux].okays--;
                 if (memReg[aux].okays == 0)
                 {
                     memReg[aux].pedido = 0;
                     memReg[aux].mutex = 1;
-                    printf("%s: MUTEX(%s)", proceso, &buffer[indiceProc + 2]);
+                    printf("%s: MUTEX(%s)\n", proceso, &buffer[indiceProc + 2]);
                 }
             }
-            // TODO: revisar por qué puse esto
-            // addToClock(procesoYo, proceso, relojPract.listaProcesos);
         }
+
+        else if (strcmp(act, "MESSAGETO") == 0)
+        {
+            addToClock(procesoYo, proceso, relojPract.listaProcesos);
+            sendMessageTo(par);
+        }
+
         else if (strcmp(act, "LOCK") == 0)
         {
             char stAux[strlen(par)];
             strcpy(stAux, par);
             int aux = sectionToInt(stAux);
-
             //TODO: pasar pedir sección a aquí, que no haya una función solo para eso
             if (aux == -1)
                 pedirSeccion(addSection(stAux));
             else
                 pedirSeccion(aux);
-
             addToClock(procesoYo, proceso, relojPract.listaProcesos);
             sendLock(stAux);
         }
+
         else if (strcmp(act, "UNLOCK") == 0)
         {
             char stAux[strlen(par)];
@@ -332,9 +333,6 @@ int main(int argc, char *argv[])
             memReg[aux].peticiones = (int *)malloc(sizeof(int));
             memReg[aux].mutex = 0;
         }
-
-        else if (strcmp(line, "FINISH\n") == 0)
-            break;
 
         free(buffer);
     }
@@ -360,18 +358,18 @@ void pedirSeccion(int identificador)
 int addSection(char *nombre)
 {
     RegionCritica aux;
-    aux.pedido = 0;
-    aux.mutex = 0;
     aux.nombre = (char *)malloc(strlen(nombre));
     strcpy(aux.nombre, nombre);
-    aux.nPeticionarios = 0;
     aux.peticiones = (int *)malloc(sizeof(int));
     aux.okays = indiceProc - 1;
+    aux.nPeticionarios = 0;
+    aux.pedido = 0;
+    aux.mutex = 0;
     // TODO: añadir más cosas si hacen falta a RegiónCrítica
     memReg[indiceSecc++] = aux;
     memReg = (RegionCritica *)realloc(memReg, (indiceSecc + 1) * sizeof(struct regiones));
     // TODO: comprobar si está bien
-    
+
     return indiceSecc - 1;
 }
 
@@ -391,7 +389,7 @@ void sendMessageTo(char *parametro)
 
     for (int i = 0; i < indiceProc; i++)
     {
-        if (strcmp(memProc[i].proccess, parametro)==0)
+        if (strcmp(memProc[i].proccess, parametro) == 0)
         {
             dirAux.sin_port = memProc[i].port;
             break;
@@ -403,8 +401,8 @@ void sendMessageTo(char *parametro)
     if (sendto(socketUDP, buffer, sizeof(buffer), 0, (struct sockaddr *)&dirAux, sizeof(dirAux)) < 0)
     {
         perror("Error sendto() de MessageTo");
-        close(socketUDP);
-        return -1;
+        // close(socketUDP);
+        // return -1;
     }
 
     printf("%s: SEND(MSG,%s)\n", proceso, parametro);
@@ -427,10 +425,10 @@ void sendReceive(char *nombre)
     if (sendto(socketUDP, buffer, sizeof(buffer), 0, (struct sockaddr *)&dirAux, sizeof(dirAux)) < 0)
     {
         perror("Error sendto() de Receive");
-        close(socketUDP);
-        return -1;
+        // close(socketUDP);
+        // return -1;
     }
-    printf("%s: SEND(OK,%s)", proceso, memProc[destino].proccess);
+    printf("%s: SEND(OK,%s)\n", proceso, memProc[destino].proccess);
 }
 
 void sendLock(char *seccion)
@@ -441,11 +439,13 @@ void sendLock(char *seccion)
     for (int i = 0; i < indiceProc; i++)
         buffer[i + 2] = relojPract.listaProcesos[i];
 
-    for (int i = 0; i < indiceProc; i++)
+    for (int j = 0; j < indiceProc; j++)
     {
-        if (i != procesoYo)
+        // if (j == indiceProc)
+        // continue;
+        if (j != procesoYo)
         {
-            dirAux.sin_port = memProc[i].port;
+            dirAux.sin_port = memProc[j].port;
             buffer[0] = LOCK;
             buffer[1] = procesoYo;
             strcpy(&buffer[indiceProc + 2], seccion);
@@ -453,11 +453,11 @@ void sendLock(char *seccion)
             if (sendto(socketUDP, buffer, sizeof(buffer), 0, (struct sockaddr *)&dirAux, sizeof(dirAux)) < 0)
             {
                 perror("Error sendto() de Lock");
-                close(socketUDP);
-                return -1;
+                // close(socketUDP);
+                // return -1;
             }
 
-            printf("%s: SEND(LOCK,%s)", proceso, memProc[i].proccess);
+            printf("%s: SEND(LOCK,%s)\n", proceso, memProc[j].proccess);
         }
     }
 }
@@ -484,11 +484,11 @@ void sendUnlock(char *seccion)
         if (sendto(socketUDP, buffer, sizeof(buffer), 0, (struct sockaddr *)&dirAux, sizeof(dirAux)) < 0)
         {
             perror("Error sendto() de Unlock");
-            close(socketUDP);
-            return -1;
+            // close(socketUDP);
+            // return -1;
         }
 
-        printf("%s: SEND(OK,%s)", proceso, memProc[memReg[auxSec].peticiones[i]].proccess);
+        printf("%s: SEND(OK,%s)\n", proceso, memProc[memReg[auxSec].peticiones[i]].proccess);
     }
 }
 
@@ -512,11 +512,4 @@ void printClock(int procesos, char *proceso, int *estados)
         i++;
     }
     printf("%d]\n", estados[procesos - 1]);
-
-    // for (i = 0; i < procesos;i++){
-    //     printf("%d", estados[i]);
-    //     if (i != procesos - 1)
-    //         printf(",");
-    // }
-    // printf("]\n");
 }
