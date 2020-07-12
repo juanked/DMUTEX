@@ -1,0 +1,1933 @@
+ln: failed to create symbolic link â€˜Makefileâ€™: File exists
+>> Práctica de Sistemas Operativos Distribuidos
+>> ============================================
+>> DMUTEX(Distributed Mutex)
+>> 
+>> Convocatoria:          Junio/Septiembre	2012-2013
+>> Fecha tope de entrega: 10 Junio
+>> Responsable:           José M. Peña (jmpena@fi.upm.es)
+
+======================> base_independientes <====================
+>> PRUEBA DE LAS FUNCIONALIDADES BÁSICAS (I - Independientes)
+>> Esta prueba consiste en tres ejecuciones de procesos independientes
+>> entre si. No hay mensajes ni peticiones de semáforos entre ellos.
+>> Fichero: UNPROCESO
+ALONE: EVENT
+ALONE: EVENT
+ALONE: EVENT
+ALONE: GETCLOCK
+>> Ejecutando: ./controlador UNPROCESO $TICK
+>> Comparando salidas
+>> ALONE: [EVENT]-> ALONE{TICK}							      <
+>> ALONE: [EVENT]-> ALONE{TICK}							      <
+>> ALONE: [EVENT]-> ALONE{TICK}							      <
+>> ALONE: [GETCLOCK]-> ALONE{LC[3]}						      <
+>> Fichero: DOSPROCESOS
+FOO: EVENT
+FOO: EVENT
+BAA: EVENT
+FOO: GETCLOCK
+BAA: GETCLOCK
+FOO: EVENT
+BAA: EVENT
+FOO: GETCLOCK
+BAA: GETCLOCK
+>> Ejecutando: ./controlador DOSPROCESOS $TICK
+>> Comparando salidas
+>> FOO: [EVENT]-> FOO{TICK} BAA{--}						      <
+>> FOO: [EVENT]-> FOO{TICK} BAA{--}						      <
+>> BAA: [EVENT]-> FOO{--} BAA{TICK}						      <
+>> FOO: [GETCLOCK]-> FOO{LC[2,0]} BAA{--}						      <
+>> BAA: [GETCLOCK]-> FOO{--} BAA{LC[0,1]}						      <
+>> FOO: [EVENT]-> FOO{TICK} BAA{--}						      <
+>> BAA: [EVENT]-> FOO{--} BAA{TICK}						      <
+>> FOO: [GETCLOCK]-> FOO{LC[3,0]} BAA{--}						      <
+>> BAA: [GETCLOCK]-> FOO{--} BAA{LC[0,2]}						      <
+>> Fichero: CUATROPROCESOS
+N: GETCLOCK
+S: GETCLOCK
+E: GETCLOCK
+W: GETCLOCK
+N: EVENT
+S: EVENT
+N: EVENT
+S: EVENT
+N: EVENT
+S: EVENT
+N: GETCLOCK
+S: GETCLOCK
+E: EVENT
+W: EVENT
+E: GETCLOCK
+W: GETCLOCK
+>> Ejecutando: ./controlador CUATROPROCESOS $TICK
+>> Comparando salidas
+>> N: [GETCLOCK]-> N{LC[0,0,0,0]} S{--} E{--} W{--}				      <
+>> S: [GETCLOCK]-> N{--} S{LC[0,0,0,0]} E{--} W{--}				      <
+>> E: [GETCLOCK]-> N{--} S{--} E{LC[0,0,0,0]} W{--}				      <
+>> W: [GETCLOCK]-> N{--} S{--} E{--} W{LC[0,0,0,0]}				      <
+>> N: [EVENT]-> N{TICK} S{--} E{--} W{--}						      <
+>> S: [EVENT]-> N{--} S{TICK} E{--} W{--}						      <
+>> N: [EVENT]-> N{TICK} S{--} E{--} W{--}						      <
+>> S: [EVENT]-> N{--} S{TICK} E{--} W{--}						      <
+>> N: [EVENT]-> N{TICK} S{--} E{--} W{--}						      <
+>> S: [EVENT]-> N{--} S{TICK} E{--} W{--}						      <
+>> N: [GETCLOCK]-> N{LC[3,0,0,0]} S{--} E{--} W{--}				      <
+>> S: [GETCLOCK]-> N{--} S{LC[0,3,0,0]} E{--} W{--}				      <
+>> E: [EVENT]-> N{--} S{--} E{TICK} W{--}						      <
+>> W: [EVENT]-> N{--} S{--} E{--} W{TICK}						      <
+>> E: [GETCLOCK]-> N{--} S{--} E{LC[0,0,1,0]} W{--}				      <
+>> W: [GETCLOCK]-> N{--} S{--} E{--} W{LC[0,0,0,1]}				      <
+======================> base_independientes <====================
+>>>>>>>>>>>>>>   *********
+>>>>>>>>>>>>>>   * ERROR *
+>>>>>>>>>>>>>>   *********
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> ALONE: [EVENT]-> ALONE{TICK}							      <
+ALONE: [EVENT]-> ALONE{TICK}							      <
+ALONE: [EVENT]-> ALONE{TICK}							      <
+ALONE: [GETCLOCK]-> ALONE{LC[3]}						      <
+FOO: [EVENT]-> FOO{TICK} BAA{--}						      <
+FOO: [EVENT]-> FOO{TICK} BAA{--}						      <
+BAA: [EVENT]-> FOO{--} BAA{TICK}						      <
+FOO: [GETCLOCK]-> FOO{LC[2,0]} BAA{--}						      <
+BAA: [GETCLOCK]-> FOO{--} BAA{LC[0,1]}						      <
+FOO: [EVENT]-> FOO{TICK} BAA{--}						      <
+BAA: [EVENT]-> FOO{--} BAA{TICK}						      <
+FOO: [GETCLOCK]-> FOO{LC[3,0]} BAA{--}						      <
+BAA: [GETCLOCK]-> FOO{--} BAA{LC[0,2]}						      <
+N: [GETCLOCK]-> N{LC[0,0,0,0]} S{--} E{--} W{--}				      <
+S: [GETCLOCK]-> N{--} S{LC[0,0,0,0]} E{--} W{--}				      <
+E: [GETCLOCK]-> N{--} S{--} E{LC[0,0,0,0]} W{--}				      <
+W: [GETCLOCK]-> N{--} S{--} E{--} W{LC[0,0,0,0]}				      <
+N: [EVENT]-> N{TICK} S{--} E{--} W{--}						      <
+S: [EVENT]-> N{--} S{TICK} E{--} W{--}						      <
+N: [EVENT]-> N{TICK} S{--} E{--} W{--}						      <
+S: [EVENT]-> N{--} S{TICK} E{--} W{--}						      <
+N: [EVENT]-> N{TICK} S{--} E{--} W{--}						      <
+S: [EVENT]-> N{--} S{TICK} E{--} W{--}						      <
+N: [GETCLOCK]-> N{LC[3,0,0,0]} S{--} E{--} W{--}				      <
+S: [GETCLOCK]-> N{--} S{LC[0,3,0,0]} E{--} W{--}				      <
+E: [EVENT]-> N{--} S{--} E{TICK} W{--}						      <
+W: [EVENT]-> N{--} S{--} E{--} W{TICK}						      <
+E: [GETCLOCK]-> N{--} S{--} E{LC[0,0,1,0]} W{--}				      <
+W: [GETCLOCK]-> N{--} S{--} E{--} W{LC[0,0,0,1]}				      <
+
+>>>>>>>>>>>>>> El formato de salida no es el esperado
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> PROGRAMA:       ./controlador CUATROPROCESOS $TICK
+>>>>>>>>>>>>>> MANDATO/OPCIÓN: -
+>>>>>>>>>>>>>> SALIDA ESTÁNDAR:
+>>>>>>>>>>>>>> ERROR ESTÁNDAR:
+[1] *** Error in `./proceso': free(): invalid pointer: 0x0000000000fde3a6 ***
+[2] ======= Backtrace: =========
+[3] /lib64/libc.so.6(+0x81299)[0x7f91b25d2299]
+[4] ./proceso[0x401acb]
+[5] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7f91b2573555]
+[6] ./proceso[0x400b89]
+[7] ======= Memory map: ========
+[8] 00400000-00403000 r-xp 00000000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[9] 00602000-00603000 r--p 00002000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[10] 00603000-00604000 rw-p 00003000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[11] 00fde000-00fff000 rw-p 00000000 00:00 0                                  [heap]
+[12] 7f91ac000000-7f91ac021000 rw-p 00000000 00:00 0 
+[13] 7f91ac021000-7f91b0000000 ---p 00000000 00:00 0 
+[14] 7f91b233b000-7f91b2350000 r-xp 00000000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[15] 7f91b2350000-7f91b254f000 ---p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[16] 7f91b254f000-7f91b2550000 r--p 00014000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[17] 7f91b2550000-7f91b2551000 rw-p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[18] 7f91b2551000-7f91b2714000 r-xp 00000000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[19] 7f91b2714000-7f91b2914000 ---p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[20] 7f91b2914000-7f91b2918000 r--p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[21] 7f91b2918000-7f91b291a000 rw-p 001c7000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[22] 7f91b291a000-7f91b291f000 rw-p 00000000 00:00 0 
+[23] 7f91b291f000-7f91b2936000 r-xp 00000000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[24] 7f91b2936000-7f91b2b35000 ---p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[25] 7f91b2b35000-7f91b2b36000 r--p 00016000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[26] 7f91b2b36000-7f91b2b37000 rw-p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[27] 7f91b2b37000-7f91b2b3b000 rw-p 00000000 00:00 0 
+[28] 7f91b2b3b000-7f91b2b5d000 r-xp 00000000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[29] 7f91b2d39000-7f91b2d3c000 rw-p 00000000 00:00 0 
+[30] 7f91b2d5a000-7f91b2d5c000 rw-p 00000000 00:00 0 
+[31] 7f91b2d5c000-7f91b2d5d000 r--p 00021000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[32] 7f91b2d5d000-7f91b2d5e000 rw-p 00022000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[33] 7f91b2d5e000-7f91b2d5f000 rw-p 00000000 00:00 0 
+[34] 7ffe57b46000-7ffe57b67000 rw-p 00000000 00:00 0                          [stack]
+[35] 7ffe57ba1000-7ffe57ba3000 r-xp 00000000 00:00 0                          [vdso]
+[36] ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+[37] *** Error in `./proceso': free(): invalid pointer: 0x000000000070d3a6 ***
+[38] ======= Backtrace: =========
+[39] /lib64/libc.so.6(+0x81299)[0x7f2f9ea4b299]
+[40] ./proceso[0x401acb]
+[41] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7f2f9e9ec555]
+[42] ./proceso[0x400b89]
+[43] ======= Memory map: ========
+[44] 00400000-00403000 r-xp 00000000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[45] 00602000-00603000 r--p 00002000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[46] 00603000-00604000 rw-p 00003000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[47] 0070d000-0072e000 rw-p 00000000 00:00 0                                  [heap]
+[48] 7f2f98000000-7f2f98021000 rw-p 00000000 00:00 0 
+[49] 7f2f98021000-7f2f9c000000 ---p 00000000 00:00 0 
+[50] 7f2f9e7b4000-7f2f9e7c9000 r-xp 00000000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[51] 7f2f9e7c9000-7f2f9e9c8000 ---p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[52] 7f2f9e9c8000-7f2f9e9c9000 r--p 00014000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[53] 7f2f9e9c9000-7f2f9e9ca000 rw-p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[54] 7f2f9e9ca000-7f2f9eb8d000 r-xp 00000000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[55] 7f2f9eb8d000-7f2f9ed8d000 ---p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[56] 7f2f9ed8d000-7f2f9ed91000 r--p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[57] 7f2f9ed91000-7f2f9ed93000 rw-p 001c7000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[58] 7f2f9ed93000-7f2f9ed98000 rw-p 00000000 00:00 0 
+[59] 7f2f9ed98000-7f2f9edaf000 r-xp 00000000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[60] 7f2f9edaf000-7f2f9efae000 ---p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[61] 7f2f9efae000-7f2f9efaf000 r--p 00016000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[62] 7f2f9efaf000-7f2f9efb0000 rw-p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[63] 7f2f9efb0000-7f2f9efb4000 rw-p 00000000 00:00 0 
+[64] 7f2f9efb4000-7f2f9efd6000 r-xp 00000000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[65] 7f2f9f1b2000-7f2f9f1b5000 rw-p 00000000 00:00 0 
+[66] 7f2f9f1d3000-7f2f9f1d5000 rw-p 00000000 00:00 0 
+[67] 7f2f9f1d5000-7f2f9f1d6000 r--p 00021000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[68] 7f2f9f1d6000-7f2f9f1d7000 rw-p 00022000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[69] 7f2f9f1d7000-7f2f9f1d8000 rw-p 00000000 00:00 0 
+[70] 7ffdee959000-7ffdee97a000 rw-p 00000000 00:00 0                          [stack]
+[71] 7ffdee9a9000-7ffdee9ab000 r-xp 00000000 00:00 0                          [vdso]
+[72] ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+[73] *** Error in `./proceso': free(): invalid pointer: 0x0000000000b043a6 ***
+[74] ======= Backtrace: =========
+[75] /lib64/libc.so.6(+0x81299)[0x7fc1ca282299]
+[76] ./proceso[0x401acb]
+[77] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7fc1ca223555]
+[78] ./proceso[0x400b89]
+[79] ======= Memory map: ========
+[80] 00400000-00403000 r-xp 00000000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[81] 00602000-00603000 r--p 00002000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[82] 00603000-00604000 rw-p 00003000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[83] 00b04000-00b25000 rw-p 00000000 00:00 0                                  [heap]
+[84] 7fc1c4000000-7fc1c4021000 rw-p 00000000 00:00 0 
+[85] 7fc1c4021000-7fc1c8000000 ---p 00000000 00:00 0 
+[86] 7fc1c9feb000-7fc1ca000000 r-xp 00000000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[87] 7fc1ca000000-7fc1ca1ff000 ---p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[88] 7fc1ca1ff000-7fc1ca200000 r--p 00014000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[89] 7fc1ca200000-7fc1ca201000 rw-p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[90] 7fc1ca201000-7fc1ca3c4000 r-xp 00000000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[91] 7fc1ca3c4000-7fc1ca5c4000 ---p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[92] 7fc1ca5c4000-7fc1ca5c8000 r--p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[93] 7fc1ca5c8000-7fc1ca5ca000 rw-p 001c7000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[94] 7fc1ca5ca000-7fc1ca5cf000 rw-p 00000000 00:00 0 
+[95] 7fc1ca5cf000-7fc1ca5e6000 r-xp 00000000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[96] 7fc1ca5e6000-7fc1ca7e5000 ---p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[97] 7fc1ca7e5000-7fc1ca7e6000 r--p 00016000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[98] 7fc1ca7e6000-7fc1ca7e7000 rw-p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[99] 7fc1ca7e7000-7fc1ca7eb000 rw-p 00000000 00:00 0 
+[100] 7fc1ca7eb000-7fc1ca80d000 r-xp 00000000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[101] 7fc1ca9e9000-7fc1ca9ec000 rw-p 00000000 00:00 0 
+[102] 7fc1caa0a000-7fc1caa0c000 rw-p 00000000 00:00 0 
+[103] 7fc1caa0c000-7fc1caa0d000 r--p 00021000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[104] 7fc1caa0d000-7fc1caa0e000 rw-p 00022000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[105] 7fc1caa0e000-7fc1caa0f000 rw-p 00000000 00:00 0 
+[106] 7ffcb6e5c000-7ffcb6e7d000 rw-p 00000000 00:00 0                          [stack]
+[107] 7ffcb6f63000-7ffcb6f65000 r-xp 00000000 00:00 0                          [vdso]
+[108] ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+[109] *** Error in `./proceso': free(): invalid pointer: 0x000000000143c3a6 ***
+[110] ======= Backtrace: =========
+[111] /lib64/libc.so.6(+0x81299)[0x7f1ed2654299]
+[112] ./proceso[0x401acb]
+[113] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7f1ed25f5555]
+[114] ./proceso[0x400b89]
+[115] ======= Memory map: ========
+[116] 00400000-00403000 r-xp 00000000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[117] 00602000-00603000 r--p 00002000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[118] 00603000-00604000 rw-p 00003000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[119] 0143c000-0145d000 rw-p 00000000 00:00 0                                  [heap]
+[120] 7f1ecc000000-7f1ecc021000 rw-p 00000000 00:00 0 
+[121] 7f1ecc021000-7f1ed0000000 ---p 00000000 00:00 0 
+[122] 7f1ed23bd000-7f1ed23d2000 r-xp 00000000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[123] 7f1ed23d2000-7f1ed25d1000 ---p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[124] 7f1ed25d1000-7f1ed25d2000 r--p 00014000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[125] 7f1ed25d2000-7f1ed25d3000 rw-p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[126] 7f1ed25d3000-7f1ed2796000 r-xp 00000000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[127] 7f1ed2796000-7f1ed2996000 ---p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[128] 7f1ed2996000-7f1ed299a000 r--p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[129] 7f1ed299a000-7f1ed299c000 rw-p 001c7000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[130] 7f1ed299c000-7f1ed29a1000 rw-p 00000000 00:00 0 
+[131] 7f1ed29a1000-7f1ed29b8000 r-xp 00000000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[132] 7f1ed29b8000-7f1ed2bb7000 ---p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[133] 7f1ed2bb7000-7f1ed2bb8000 r--p 00016000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[134] 7f1ed2bb8000-7f1ed2bb9000 rw-p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[135] 7f1ed2bb9000-7f1ed2bbd000 rw-p 00000000 00:00 0 
+[136] 7f1ed2bbd000-7f1ed2bdf000 r-xp 00000000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[137] 7f1ed2dbb000-7f1ed2dbe000 rw-p 00000000 00:00 0 
+[138] 7f1ed2ddc000-7f1ed2dde000 rw-p 00000000 00:00 0 
+[139] 7f1ed2dde000-7f1ed2ddf000 r--p 00021000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[140] 7f1ed2ddf000-7f1ed2de0000 rw-p 00022000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[141] 7f1ed2de0000-7f1ed2de1000 rw-p 00000000 00:00 0 
+[142] 7ffee4a4c000-7ffee4a6d000 rw-p 00000000 00:00 0                          [stack]
+[143] 7ffee4bf2000-7ffee4bf4000 r-xp 00000000 00:00 0                          [vdso]
+[144] ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+>>>>>>>>>>>>>>
+======================> base_mensajes <====================
+>> PRUEBA DE LAS FUNCIONALIDADES BÁSICAS (II - Mensajes)
+>> Esta prueba consiste en seis ejecuciones de procesos que intercambian
+>> mensajes entre sí.
+>> Fichero: UNOMISMO
+ALONE: EVENT
+ALONE: EVENT
+ALONE: EVENT
+ALONE: GETCLOCK
+ALONE: MESSAGETO ALONE
+ALONE: RECEIVE
+ALONE: GETCLOCK
+>> Ejecutando: ./controlador UNOMISMO $TICK
+>> Comparando salidas
+>> ALONE: [EVENT]-> ALONE{TICK}							      <
+>> ALONE: [EVENT]-> ALONE{TICK}							      <
+>> ALONE: [EVENT]-> ALONE{TICK}							      <
+>> ALONE: [GETCLOCK]-> ALONE{LC[3]}						      <
+>> ALONE: [MESSAGETO ALONE]-> ALONE{TICK|SEND(MSG,ALONE)}				      <
+>> ALONE: [RECEIVE]-> ALONE{RECEIVE(MSG,ALONE)|TICK}				      <
+>> ALONE: [GETCLOCK]-> ALONE{LC[5]}						      <
+>> Fichero: DOSPROCESOS
+SNDR: EVENT
+SNDR: EVENT
+RECV: EVENT
+SNDR: GETCLOCK
+RECV: GETCLOCK
+SNDR: MESSAGETO RECV
+RECV: RECEIVE
+SNDR: GETCLOCK
+RECV: GETCLOCK
+>> Ejecutando: ./controlador DOSPROCESOS $TICK
+>> Comparando salidas
+>> SNDR: [EVENT]-> SNDR{TICK} RECV{--}						      <
+>> SNDR: [EVENT]-> SNDR{TICK} RECV{--}						      <
+>> RECV: [EVENT]-> SNDR{--} RECV{TICK}						      <
+>> SNDR: [GETCLOCK]-> SNDR{LC[2,0]} RECV{--}					      <
+>> RECV: [GETCLOCK]-> SNDR{--} RECV{LC[0,1]}					      <
+>> SNDR: [MESSAGETO RECV]-> SNDR{TICK|SEND(MSG,RECV)} RECV{--}			      <
+>> RECV: [RECEIVE]-> SNDR{--} RECV{RECEIVE(MSG,SNDR)|TICK}				      <
+>> SNDR: [GETCLOCK]-> SNDR{LC[3,0]} RECV{--}					      <
+>> RECV: [GETCLOCK]-> SNDR{--} RECV{LC[3,2]}					      <
+>> Protolo entre cliente y servidor
+>> Fichero: PROTOCOLO1
+SRV: GETCLOCK
+CLI: GETCLOCK
+# El cliente procesa un dato
+CLI: EVENT
+# Ahora el cliente necesita solicitar una
+# operación
+CLI: MESSAGETO SRV
+SRV: RECEIVE
+# El servidor lo procesa
+SRV: EVENT
+SRV: EVENT
+# y transmite respuesta
+SRV: MESSAGETO CLI
+CLI: RECEIVE
+CLI: EVENT
+# Y termina
+SRV: GETCLOCK
+CLI: GETCLOCK
+>> Ejecutando: ./controlador PROTOCOLO1 $TICK
+>> Comparando salidas
+>> SRV: [GETCLOCK]-> SRV{LC[0,0]} CLI{--}						      <
+>> CLI: [GETCLOCK]-> SRV{--} CLI{LC[0,0]}						      <
+>> # El cliente procesa un dato							      <
+>> CLI: [EVENT]-> SRV{--} CLI{TICK}						      <
+>> # Ahora el cliente necesita solicitar una					      <
+>> # operación									      <
+>> CLI: [MESSAGETO SRV]-> SRV{--} CLI{TICK|SEND(MSG,SRV)}				      <
+>> SRV: [RECEIVE]-> SRV{RECEIVE(MSG,CLI)|TICK} CLI{--}				      <
+>> # El servidor lo procesa							      <
+>> SRV: [EVENT]-> SRV{TICK} CLI{--}						      <
+>> SRV: [EVENT]-> SRV{TICK} CLI{--}						      <
+>> # y transmite respuesta								      <
+>> SRV: [MESSAGETO CLI]-> SRV{TICK|SEND(MSG,CLI)} CLI{--}				      <
+>> CLI: [RECEIVE]-> SRV{--} CLI{RECEIVE(MSG,SRV)|TICK}				      <
+>> CLI: [EVENT]-> SRV{--} CLI{TICK}						      <
+>> # Y termina									      <
+>> SRV: [GETCLOCK]-> SRV{LC[4,2]} CLI{--}						      <
+>> CLI: [GETCLOCK]-> SRV{--} CLI{LC[4,4]}						      <
+>> Protolo entre dos clientes y un servidor (secuencial)
+>> Fichero: PROTOCOLO2
+SRV: GETCLOCK
+CL1: GETCLOCK
+CL2: GETCLOCK
+# Petición y respuesta del primer cliente
+CL1: EVENT
+CL1: MESSAGETO SRV
+SRV: RECEIVE
+SRV: EVENT
+SRV: EVENT
+SRV: MESSAGETO CL1
+CL1: RECEIVE
+CL1: EVENT
+# El segundo cliente hace lo mismo
+CL2: EVENT
+CL2: MESSAGETO SRV
+SRV: RECEIVE
+SRV: EVENT
+SRV: EVENT
+SRV: MESSAGETO CL2
+CL2: RECEIVE
+CL2: EVENT
+# Y termina
+SRV: GETCLOCK
+CL1: GETCLOCK
+CL2: GETCLOCK
+>> Ejecutando: ./controlador PROTOCOLO2 $TICK
+>> Comparando salidas
+>> SRV: [GETCLOCK]-> SRV{LC[0,0,0]} CL1{--} CL2{--}				      <
+>> CL1: [GETCLOCK]-> SRV{--} CL1{LC[0,0,0]} CL2{--}				      <
+>> CL2: [GETCLOCK]-> SRV{--} CL1{--} CL2{LC[0,0,0]}				      <
+>> # Petición y respuesta del primer cliente					      <
+>> CL1: [EVENT]-> SRV{--} CL1{TICK} CL2{--}					      <
+>> CL1: [MESSAGETO SRV]-> SRV{--} CL1{TICK|SEND(MSG,SRV)} CL2{--}			      <
+>> SRV: [RECEIVE]-> SRV{RECEIVE(MSG,CL1)|TICK} CL1{--} CL2{--}			      <
+>> SRV: [EVENT]-> SRV{TICK} CL1{--} CL2{--}					      <
+>> SRV: [EVENT]-> SRV{TICK} CL1{--} CL2{--}					      <
+>> SRV: [MESSAGETO CL1]-> SRV{TICK|SEND(MSG,CL1)} CL1{--} CL2{--}			      <
+>> CL1: [RECEIVE]-> SRV{--} CL1{RECEIVE(MSG,SRV)|TICK} CL2{--}			      <
+>> CL1: [EVENT]-> SRV{--} CL1{TICK} CL2{--}					      <
+>> # El segundo cliente hace lo mismo						      <
+>> CL2: [EVENT]-> SRV{--} CL1{--} CL2{TICK}					      <
+>> CL2: [MESSAGETO SRV]-> SRV{--} CL1{--} CL2{TICK|SEND(MSG,SRV)}			      <
+>> SRV: [RECEIVE]-> SRV{RECEIVE(MSG,CL2)|TICK} CL1{--} CL2{--}			      <
+>> SRV: [EVENT]-> SRV{TICK} CL1{--} CL2{--}					      <
+>> SRV: [EVENT]-> SRV{TICK} CL1{--} CL2{--}					      <
+>> SRV: [MESSAGETO CL2]-> SRV{TICK|SEND(MSG,CL2)} CL1{--} CL2{--}			      <
+>> CL2: [RECEIVE]-> SRV{--} CL1{--} CL2{RECEIVE(MSG,SRV)|TICK}			      <
+>> CL2: [EVENT]-> SRV{--} CL1{--} CL2{TICK}					      <
+>> # Y termina									      <
+>> SRV: [GETCLOCK]-> SRV{LC[8,2,2]} CL1{--} CL2{--}				      <
+>> CL1: [GETCLOCK]-> SRV{--} CL1{LC[4,4,0]} CL2{--}				      <
+>> CL2: [GETCLOCK]-> SRV{--} CL1{--} CL2{LC[8,2,4]}				      <
+>> Cliente, proxy y servidor (secuencial)
+>> Fichero: PROTOCOLO3
+CLI: GETCLOCK
+PROXY: GETCLOCK
+SRV: GETCLOCK
+# [1] La primera petición no está en el
+#     proxy y éste la retransmite al servidor
+CLI: EVENT
+CLI: MESSAGETO PROXY
+PROXY: RECEIVE
+PROXY: EVENT
+# NO ESTÁ
+PROXY: MESSAGETO SRV
+SRV: RECEIVE
+SRV: MESSAGETO PROXY
+PROXY: RECEIVE
+PROXY: MESSAGETO CLI
+CLI: RECEIVE
+# [2] La segunda petición si está en el
+#     proxy (respuesta directa).
+CLI: EVENT
+CLI: MESSAGETO PROXY
+PROXY: RECEIVE
+PROXY: EVENT
+# SI ESTÁ
+PROXY: MESSAGETO CLI
+CLI: RECEIVE
+# FIN
+CLI: GETCLOCK
+PROXY: GETCLOCK
+SRV: GETCLOCK
+>> Ejecutando: ./controlador PROTOCOLO3 $TICK
+>> Comparando salidas
+>> CLI: [GETCLOCK]-> CLI{LC[0,0,0]} PROXY{--} SRV{--}				      <
+>> PROXY: [GETCLOCK]-> CLI{--} PROXY{LC[0,0,0]} SRV{--}				      <
+>> SRV: [GETCLOCK]-> CLI{--} PROXY{--} SRV{LC[0,0,0]}				      <
+>> # [1] La primera petición no está en el						      <
+>> #     proxy y éste la retransmite al servidor					      <
+>> CLI: [EVENT]-> CLI{TICK} PROXY{--} SRV{--}					      <
+>> CLI: [MESSAGETO PROXY]-> CLI{TICK|SEND(MSG,PROXY)} PROXY{--} SRV{--}		      <
+>> PROXY: [RECEIVE]-> CLI{--} PROXY{RECEIVE(MSG,CLI)|TICK} SRV{--}			      <
+>> PROXY: [EVENT]-> CLI{--} PROXY{TICK} SRV{--}					      <
+>> # NO ESTÁ									      <
+>> PROXY: [MESSAGETO SRV]-> CLI{--} PROXY{TICK|SEND(MSG,SRV)} SRV{--}		      <
+>> SRV: [RECEIVE]-> CLI{--} PROXY{--} SRV{RECEIVE(MSG,PROXY)|TICK}			      <
+>> SRV: [MESSAGETO PROXY]-> CLI{--} PROXY{--} SRV{TICK|SEND(MSG,PROXY)}		      <
+>> PROXY: [RECEIVE]-> CLI{--} PROXY{RECEIVE(MSG,SRV)|TICK} SRV{--}			      <
+>> PROXY: [MESSAGETO CLI]-> CLI{--} PROXY{TICK|SEND(MSG,CLI)} SRV{--}		      <
+>> CLI: [RECEIVE]-> CLI{RECEIVE(MSG,PROXY)|TICK} PROXY{--} SRV{--}			      <
+>> # [2] La segunda petición si está en el						      <
+>> #     proxy (respuesta directa).						      <
+>> CLI: [EVENT]-> CLI{TICK} PROXY{--} SRV{--}					      <
+>> CLI: [MESSAGETO PROXY]-> CLI{TICK|SEND(MSG,PROXY)} PROXY{--} SRV{--}		      <
+>> PROXY: [RECEIVE]-> CLI{--} PROXY{RECEIVE(MSG,CLI)|TICK} SRV{--}			      <
+>> PROXY: [EVENT]-> CLI{--} PROXY{TICK} SRV{--}					      <
+>> # SI ESTÁ									      <
+>> PROXY: [MESSAGETO CLI]-> CLI{--} PROXY{TICK|SEND(MSG,CLI)} SRV{--}		      <
+>> CLI: [RECEIVE]-> CLI{RECEIVE(MSG,PROXY)|TICK} PROXY{--} SRV{--}			      <
+>> # FIN										      <
+>> CLI: [GETCLOCK]-> CLI{LC[6,8,2]} PROXY{--} SRV{--}				      <
+>> PROXY: [GETCLOCK]-> CLI{--} PROXY{LC[5,8,2]} SRV{--}				      <
+>> SRV: [GETCLOCK]-> CLI{--} PROXY{--} SRV{LC[2,3,2]}				      <
+>> Protolo entre dos clientes y un servidor (concurrente)
+>> Fichero: PROTOCOLO_CONC
+SRV: GETCLOCK
+CL1: GETCLOCK
+CL2: GETCLOCK
+# Petición en paralelo de ambos clientes:
+CL1: EVENT
+CL1: MESSAGETO SRV
+CL2: EVENT
+CL2: MESSAGETO SRV
+SRV: RECEIVE
+SRV: EVENT
+SRV: EVENT
+SRV: MESSAGETO CL1
+CL1: RECEIVE
+CL1: EVENT
+# El segundo recibe su respuesta
+SRV: RECEIVE
+SRV: EVENT
+SRV: EVENT
+SRV: MESSAGETO CL2
+CL2: RECEIVE
+CL2: EVENT
+# Y termina
+SRV: GETCLOCK
+CL1: GETCLOCK
+CL2: GETCLOCK
+>> Ejecutando: ./controlador PROTOCOLO_CONC $TICK
+>> Comparando salidas
+>> SRV: [GETCLOCK]-> SRV{LC[0,0,0]} CL1{--} CL2{--}				      <
+>> CL1: [GETCLOCK]-> SRV{--} CL1{LC[0,0,0]} CL2{--}				      <
+>> CL2: [GETCLOCK]-> SRV{--} CL1{--} CL2{LC[0,0,0]}				      <
+>> # Petición en paralelo de ambos clientes:					      <
+>> CL1: [EVENT]-> SRV{--} CL1{TICK} CL2{--}					      <
+>> CL1: [MESSAGETO SRV]-> SRV{--} CL1{TICK|SEND(MSG,SRV)} CL2{--}			      <
+>> CL2: [EVENT]-> SRV{--} CL1{--} CL2{TICK}					      <
+>> CL2: [MESSAGETO SRV]-> SRV{--} CL1{--} CL2{TICK|SEND(MSG,SRV)}			      <
+>> SRV: [RECEIVE]-> SRV{RECEIVE(MSG,CL1)|TICK} CL1{--} CL2{--}			      <
+>> SRV: [EVENT]-> SRV{TICK} CL1{--} CL2{--}					      <
+>> SRV: [EVENT]-> SRV{TICK} CL1{--} CL2{--}					      <
+>> SRV: [MESSAGETO CL1]-> SRV{TICK|SEND(MSG,CL1)} CL1{--} CL2{--}			      <
+>> CL1: [RECEIVE]-> SRV{--} CL1{RECEIVE(MSG,SRV)|TICK} CL2{--}			      <
+>> CL1: [EVENT]-> SRV{--} CL1{TICK} CL2{--}					      <
+>> # El segundo recibe su respuesta						      <
+>> SRV: [RECEIVE]-> SRV{RECEIVE(MSG,CL2)|TICK} CL1{--} CL2{--}			      <
+>> SRV: [EVENT]-> SRV{TICK} CL1{--} CL2{--}					      <
+>> SRV: [EVENT]-> SRV{TICK} CL1{--} CL2{--}					      <
+>> SRV: [MESSAGETO CL2]-> SRV{TICK|SEND(MSG,CL2)} CL1{--} CL2{--}			      <
+>> CL2: [RECEIVE]-> SRV{--} CL1{--} CL2{RECEIVE(MSG,SRV)|TICK}			      <
+>> CL2: [EVENT]-> SRV{--} CL1{--} CL2{TICK}					      <
+>> # Y termina									      <
+>> SRV: [GETCLOCK]-> SRV{LC[8,2,2]} CL1{--} CL2{--}				      <
+>> CL1: [GETCLOCK]-> SRV{--} CL1{LC[4,4,0]} CL2{--}				      <
+>> CL2: [GETCLOCK]-> SRV{--} CL1{--} CL2{LC[8,2,4]}				      <
+======================> base_mensajes <====================
+>>>>>>>>>>>>>>   *********
+>>>>>>>>>>>>>>   * ERROR *
+>>>>>>>>>>>>>>   *********
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> ALONE: [EVENT]-> ALONE{TICK}							      <
+ALONE: [EVENT]-> ALONE{TICK}							      <
+ALONE: [EVENT]-> ALONE{TICK}							      <
+ALONE: [GETCLOCK]-> ALONE{LC[3]}						      <
+ALONE: [MESSAGETO ALONE]-> ALONE{TICK|SEND(MSG,ALONE)}				      <
+ALONE: [RECEIVE]-> ALONE{RECEIVE(MSG,ALONE)|TICK}				      <
+ALONE: [GETCLOCK]-> ALONE{LC[5]}						      <
+SNDR: [EVENT]-> SNDR{TICK} RECV{--}						      <
+SNDR: [EVENT]-> SNDR{TICK} RECV{--}						      <
+RECV: [EVENT]-> SNDR{--} RECV{TICK}						      <
+SNDR: [GETCLOCK]-> SNDR{LC[2,0]} RECV{--}					      <
+RECV: [GETCLOCK]-> SNDR{--} RECV{LC[0,1]}					      <
+SNDR: [MESSAGETO RECV]-> SNDR{TICK|SEND(MSG,RECV)} RECV{--}			      <
+RECV: [RECEIVE]-> SNDR{--} RECV{RECEIVE(MSG,SNDR)|TICK}				      <
+SNDR: [GETCLOCK]-> SNDR{LC[3,0]} RECV{--}					      <
+RECV: [GETCLOCK]-> SNDR{--} RECV{LC[3,2]}					      <
+SRV: [GETCLOCK]-> SRV{LC[0,0]} CLI{--}						      <
+CLI: [GETCLOCK]-> SRV{--} CLI{LC[0,0]}						      <
+# El cliente procesa un dato							      <
+CLI: [EVENT]-> SRV{--} CLI{TICK}						      <
+# Ahora el cliente necesita solicitar una					      <
+# operación									      <
+CLI: [MESSAGETO SRV]-> SRV{--} CLI{TICK|SEND(MSG,SRV)}				      <
+SRV: [RECEIVE]-> SRV{RECEIVE(MSG,CLI)|TICK} CLI{--}				      <
+# El servidor lo procesa							      <
+SRV: [EVENT]-> SRV{TICK} CLI{--}						      <
+SRV: [EVENT]-> SRV{TICK} CLI{--}						      <
+# y transmite respuesta								      <
+SRV: [MESSAGETO CLI]-> SRV{TICK|SEND(MSG,CLI)} CLI{--}				      <
+CLI: [RECEIVE]-> SRV{--} CLI{RECEIVE(MSG,SRV)|TICK}				      <
+CLI: [EVENT]-> SRV{--} CLI{TICK}						      <
+# Y termina									      <
+SRV: [GETCLOCK]-> SRV{LC[4,2]} CLI{--}						      <
+CLI: [GETCLOCK]-> SRV{--} CLI{LC[4,4]}						      <
+SRV: [GETCLOCK]-> SRV{LC[0,0,0]} CL1{--} CL2{--}				      <
+CL1: [GETCLOCK]-> SRV{--} CL1{LC[0,0,0]} CL2{--}				      <
+CL2: [GETCLOCK]-> SRV{--} CL1{--} CL2{LC[0,0,0]}				      <
+# Petición y respuesta del primer cliente					      <
+CL1: [EVENT]-> SRV{--} CL1{TICK} CL2{--}					      <
+CL1: [MESSAGETO SRV]-> SRV{--} CL1{TICK|SEND(MSG,SRV)} CL2{--}			      <
+SRV: [RECEIVE]-> SRV{RECEIVE(MSG,CL1)|TICK} CL1{--} CL2{--}			      <
+SRV: [EVENT]-> SRV{TICK} CL1{--} CL2{--}					      <
+SRV: [EVENT]-> SRV{TICK} CL1{--} CL2{--}					      <
+SRV: [MESSAGETO CL1]-> SRV{TICK|SEND(MSG,CL1)} CL1{--} CL2{--}			      <
+CL1: [RECEIVE]-> SRV{--} CL1{RECEIVE(MSG,SRV)|TICK} CL2{--}			      <
+CL1: [EVENT]-> SRV{--} CL1{TICK} CL2{--}					      <
+# El segundo cliente hace lo mismo						      <
+CL2: [EVENT]-> SRV{--} CL1{--} CL2{TICK}					      <
+CL2: [MESSAGETO SRV]-> SRV{--} CL1{--} CL2{TICK|SEND(MSG,SRV)}			      <
+SRV: [RECEIVE]-> SRV{RECEIVE(MSG,CL2)|TICK} CL1{--} CL2{--}			      <
+SRV: [EVENT]-> SRV{TICK} CL1{--} CL2{--}					      <
+SRV: [EVENT]-> SRV{TICK} CL1{--} CL2{--}					      <
+SRV: [MESSAGETO CL2]-> SRV{TICK|SEND(MSG,CL2)} CL1{--} CL2{--}			      <
+CL2: [RECEIVE]-> SRV{--} CL1{--} CL2{RECEIVE(MSG,SRV)|TICK}			      <
+CL2: [EVENT]-> SRV{--} CL1{--} CL2{TICK}					      <
+# Y termina									      <
+SRV: [GETCLOCK]-> SRV{LC[8,2,2]} CL1{--} CL2{--}				      <
+CL1: [GETCLOCK]-> SRV{--} CL1{LC[4,4,0]} CL2{--}				      <
+CL2: [GETCLOCK]-> SRV{--} CL1{--} CL2{LC[8,2,4]}				      <
+CLI: [GETCLOCK]-> CLI{LC[0,0,0]} PROXY{--} SRV{--}				      <
+PROXY: [GETCLOCK]-> CLI{--} PROXY{LC[0,0,0]} SRV{--}				      <
+SRV: [GETCLOCK]-> CLI{--} PROXY{--} SRV{LC[0,0,0]}				      <
+# [1] La primera petición no está en el						      <
+#     proxy y éste la retransmite al servidor					      <
+CLI: [EVENT]-> CLI{TICK} PROXY{--} SRV{--}					      <
+CLI: [MESSAGETO PROXY]-> CLI{TICK|SEND(MSG,PROXY)} PROXY{--} SRV{--}		      <
+PROXY: [RECEIVE]-> CLI{--} PROXY{RECEIVE(MSG,CLI)|TICK} SRV{--}			      <
+PROXY: [EVENT]-> CLI{--} PROXY{TICK} SRV{--}					      <
+# NO ESTÁ									      <
+PROXY: [MESSAGETO SRV]-> CLI{--} PROXY{TICK|SEND(MSG,SRV)} SRV{--}		      <
+SRV: [RECEIVE]-> CLI{--} PROXY{--} SRV{RECEIVE(MSG,PROXY)|TICK}			      <
+SRV: [MESSAGETO PROXY]-> CLI{--} PROXY{--} SRV{TICK|SEND(MSG,PROXY)}		      <
+PROXY: [RECEIVE]-> CLI{--} PROXY{RECEIVE(MSG,SRV)|TICK} SRV{--}			      <
+PROXY: [MESSAGETO CLI]-> CLI{--} PROXY{TICK|SEND(MSG,CLI)} SRV{--}		      <
+CLI: [RECEIVE]-> CLI{RECEIVE(MSG,PROXY)|TICK} PROXY{--} SRV{--}			      <
+# [2] La segunda petición si está en el						      <
+#     proxy (respuesta directa).						      <
+CLI: [EVENT]-> CLI{TICK} PROXY{--} SRV{--}					      <
+CLI: [MESSAGETO PROXY]-> CLI{TICK|SEND(MSG,PROXY)} PROXY{--} SRV{--}		      <
+PROXY: [RECEIVE]-> CLI{--} PROXY{RECEIVE(MSG,CLI)|TICK} SRV{--}			      <
+PROXY: [EVENT]-> CLI{--} PROXY{TICK} SRV{--}					      <
+# SI ESTÁ									      <
+PROXY: [MESSAGETO CLI]-> CLI{--} PROXY{TICK|SEND(MSG,CLI)} SRV{--}		      <
+CLI: [RECEIVE]-> CLI{RECEIVE(MSG,PROXY)|TICK} PROXY{--} SRV{--}			      <
+# FIN										      <
+CLI: [GETCLOCK]-> CLI{LC[6,8,2]} PROXY{--} SRV{--}				      <
+PROXY: [GETCLOCK]-> CLI{--} PROXY{LC[5,8,2]} SRV{--}				      <
+SRV: [GETCLOCK]-> CLI{--} PROXY{--} SRV{LC[2,3,2]}				      <
+SRV: [GETCLOCK]-> SRV{LC[0,0,0]} CL1{--} CL2{--}				      <
+CL1: [GETCLOCK]-> SRV{--} CL1{LC[0,0,0]} CL2{--}				      <
+CL2: [GETCLOCK]-> SRV{--} CL1{--} CL2{LC[0,0,0]}				      <
+# Petición en paralelo de ambos clientes:					      <
+CL1: [EVENT]-> SRV{--} CL1{TICK} CL2{--}					      <
+CL1: [MESSAGETO SRV]-> SRV{--} CL1{TICK|SEND(MSG,SRV)} CL2{--}			      <
+CL2: [EVENT]-> SRV{--} CL1{--} CL2{TICK}					      <
+CL2: [MESSAGETO SRV]-> SRV{--} CL1{--} CL2{TICK|SEND(MSG,SRV)}			      <
+SRV: [RECEIVE]-> SRV{RECEIVE(MSG,CL1)|TICK} CL1{--} CL2{--}			      <
+SRV: [EVENT]-> SRV{TICK} CL1{--} CL2{--}					      <
+SRV: [EVENT]-> SRV{TICK} CL1{--} CL2{--}					      <
+SRV: [MESSAGETO CL1]-> SRV{TICK|SEND(MSG,CL1)} CL1{--} CL2{--}			      <
+CL1: [RECEIVE]-> SRV{--} CL1{RECEIVE(MSG,SRV)|TICK} CL2{--}			      <
+CL1: [EVENT]-> SRV{--} CL1{TICK} CL2{--}					      <
+# El segundo recibe su respuesta						      <
+SRV: [RECEIVE]-> SRV{RECEIVE(MSG,CL2)|TICK} CL1{--} CL2{--}			      <
+SRV: [EVENT]-> SRV{TICK} CL1{--} CL2{--}					      <
+SRV: [EVENT]-> SRV{TICK} CL1{--} CL2{--}					      <
+SRV: [MESSAGETO CL2]-> SRV{TICK|SEND(MSG,CL2)} CL1{--} CL2{--}			      <
+CL2: [RECEIVE]-> SRV{--} CL1{--} CL2{RECEIVE(MSG,SRV)|TICK}			      <
+CL2: [EVENT]-> SRV{--} CL1{--} CL2{TICK}					      <
+# Y termina									      <
+SRV: [GETCLOCK]-> SRV{LC[8,2,2]} CL1{--} CL2{--}				      <
+CL1: [GETCLOCK]-> SRV{--} CL1{LC[4,4,0]} CL2{--}				      <
+CL2: [GETCLOCK]-> SRV{--} CL1{--} CL2{LC[8,2,4]}				      <
+
+>>>>>>>>>>>>>> El formato de salida no es el esperado
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> PROGRAMA:       ./controlador PROTOCOLO_CONC $TICK
+>>>>>>>>>>>>>> MANDATO/OPCIÓN: -
+>>>>>>>>>>>>>> SALIDA ESTÁNDAR:
+>>>>>>>>>>>>>> ERROR ESTÁNDAR:
+[1] *** Error in `./proceso': free(): invalid pointer: 0x0000000000ad72e6 ***
+[2] ======= Backtrace: =========
+[3] /lib64/libc.so.6(+0x81299)[0x7f7eb30c0299]
+[4] ./proceso[0x401acb]
+[5] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7f7eb3061555]
+[6] ./proceso[0x400b89]
+[7] ======= Memory map: ========
+[8] 00400000-00403000 r-xp 00000000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[9] 00602000-00603000 r--p 00002000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[10] 00603000-00604000 rw-p 00003000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[11] 00ad7000-00af8000 rw-p 00000000 00:00 0                                  [heap]
+[12] 7f7eac000000-7f7eac021000 rw-p 00000000 00:00 0 
+[13] 7f7eac021000-7f7eb0000000 ---p 00000000 00:00 0 
+[14] 7f7eb2e29000-7f7eb2e3e000 r-xp 00000000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[15] 7f7eb2e3e000-7f7eb303d000 ---p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[16] 7f7eb303d000-7f7eb303e000 r--p 00014000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[17] 7f7eb303e000-7f7eb303f000 rw-p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[18] 7f7eb303f000-7f7eb3202000 r-xp 00000000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[19] 7f7eb3202000-7f7eb3402000 ---p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[20] 7f7eb3402000-7f7eb3406000 r--p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[21] 7f7eb3406000-7f7eb3408000 rw-p 001c7000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[22] 7f7eb3408000-7f7eb340d000 rw-p 00000000 00:00 0 
+[23] 7f7eb340d000-7f7eb3424000 r-xp 00000000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[24] 7f7eb3424000-7f7eb3623000 ---p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[25] 7f7eb3623000-7f7eb3624000 r--p 00016000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[26] 7f7eb3624000-7f7eb3625000 rw-p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[27] 7f7eb3625000-7f7eb3629000 rw-p 00000000 00:00 0 
+[28] 7f7eb3629000-7f7eb364b000 r-xp 00000000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[29] 7f7eb3827000-7f7eb382a000 rw-p 00000000 00:00 0 
+[30] 7f7eb3848000-7f7eb384a000 rw-p 00000000 00:00 0 
+[31] 7f7eb384a000-7f7eb384b000 r--p 00021000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[32] 7f7eb384b000-7f7eb384c000 rw-p 00022000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[33] 7f7eb384c000-7f7eb384d000 rw-p 00000000 00:00 0 
+[34] 7fffba878000-7fffba899000 rw-p 00000000 00:00 0                          [stack]
+[35] 7fffba8f2000-7fffba8f4000 r-xp 00000000 00:00 0                          [vdso]
+[36] ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+[37] *** Error in `./proceso': free(): invalid pointer: 0x0000000001a882e6 ***
+[38] ======= Backtrace: =========
+[39] /lib64/libc.so.6(+0x81299)[0x7f0f7d3a5299]
+[40] ./proceso[0x401acb]
+[41] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7f0f7d346555]
+[42] ./proceso[0x400b89]
+[43] ======= Memory map: ========
+[44] 00400000-00403000 r-xp 00000000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[45] 00602000-00603000 r--p 00002000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[46] 00603000-00604000 rw-p 00003000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[47] 01a88000-01aa9000 rw-p 00000000 00:00 0                                  [heap]
+[48] 7f0f78000000-7f0f78021000 rw-p 00000000 00:00 0 
+[49] 7f0f78021000-7f0f7c000000 ---p 00000000 00:00 0 
+[50] 7f0f7d10e000-7f0f7d123000 r-xp 00000000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[51] 7f0f7d123000-7f0f7d322000 ---p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[52] 7f0f7d322000-7f0f7d323000 r--p 00014000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[53] 7f0f7d323000-7f0f7d324000 rw-p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[54] 7f0f7d324000-7f0f7d4e7000 r-xp 00000000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[55] 7f0f7d4e7000-7f0f7d6e7000 ---p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[56] 7f0f7d6e7000-7f0f7d6eb000 r--p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[57] 7f0f7d6eb000-7f0f7d6ed000 rw-p 001c7000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[58] 7f0f7d6ed000-7f0f7d6f2000 rw-p 00000000 00:00 0 
+[59] 7f0f7d6f2000-7f0f7d709000 r-xp 00000000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[60] 7f0f7d709000-7f0f7d908000 ---p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[61] 7f0f7d908000-7f0f7d909000 r--p 00016000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[62] 7f0f7d909000-7f0f7d90a000 rw-p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[63] 7f0f7d90a000-7f0f7d90e000 rw-p 00000000 00:00 0 
+[64] 7f0f7d90e000-7f0f7d930000 r-xp 00000000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[65] 7f0f7db0c000-7f0f7db0f000 rw-p 00000000 00:00 0 
+[66] 7f0f7db2d000-7f0f7db2f000 rw-p 00000000 00:00 0 
+[67] 7f0f7db2f000-7f0f7db30000 r--p 00021000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[68] 7f0f7db30000-7f0f7db31000 rw-p 00022000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[69] 7f0f7db31000-7f0f7db32000 rw-p 00000000 00:00 0 
+[70] 7ffe1c987000-7ffe1c9a8000 rw-p 00000000 00:00 0                          [stack]
+[71] 7ffe1c9f9000-7ffe1c9fb000 r-xp 00000000 00:00 0                          [vdso]
+[72] ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+[73] *** Error in `./proceso': free(): invalid pointer: 0x000000000107d2e6 ***
+[74] ======= Backtrace: =========
+[75] /lib64/libc.so.6(+0x81299)[0x7efe5fd32299]
+[76] ./proceso[0x401acb]
+[77] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7efe5fcd3555]
+[78] ./proceso[0x400b89]
+[79] ======= Memory map: ========
+[80] 00400000-00403000 r-xp 00000000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[81] 00602000-00603000 r--p 00002000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[82] 00603000-00604000 rw-p 00003000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[83] 0107d000-0109e000 rw-p 00000000 00:00 0                                  [heap]
+[84] 7efe58000000-7efe58021000 rw-p 00000000 00:00 0 
+[85] 7efe58021000-7efe5c000000 ---p 00000000 00:00 0 
+[86] 7efe5fa9b000-7efe5fab0000 r-xp 00000000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[87] 7efe5fab0000-7efe5fcaf000 ---p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[88] 7efe5fcaf000-7efe5fcb0000 r--p 00014000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[89] 7efe5fcb0000-7efe5fcb1000 rw-p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[90] 7efe5fcb1000-7efe5fe74000 r-xp 00000000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[91] 7efe5fe74000-7efe60074000 ---p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[92] 7efe60074000-7efe60078000 r--p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[93] 7efe60078000-7efe6007a000 rw-p 001c7000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[94] 7efe6007a000-7efe6007f000 rw-p 00000000 00:00 0 
+[95] 7efe6007f000-7efe60096000 r-xp 00000000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[96] 7efe60096000-7efe60295000 ---p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[97] 7efe60295000-7efe60296000 r--p 00016000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[98] 7efe60296000-7efe60297000 rw-p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[99] 7efe60297000-7efe6029b000 rw-p 00000000 00:00 0 
+[100] 7efe6029b000-7efe602bd000 r-xp 00000000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[101] 7efe60499000-7efe6049c000 rw-p 00000000 00:00 0 
+[102] 7efe604ba000-7efe604bc000 rw-p 00000000 00:00 0 
+[103] 7efe604bc000-7efe604bd000 r--p 00021000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[104] 7efe604bd000-7efe604be000 rw-p 00022000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[105] 7efe604be000-7efe604bf000 rw-p 00000000 00:00 0 
+[106] 7ffe8217c000-7ffe8219d000 rw-p 00000000 00:00 0                          [stack]
+[107] 7ffe821b4000-7ffe821b6000 r-xp 00000000 00:00 0                          [vdso]
+[108] ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+>>>>>>>>>>>>>>
+======================> opt_sin_bloqueo <====================
+>> PRUEBA DE LAS FUNCIONALIDADES OPCIONALES (I - Semáforos sin bloqueo)
+>> Esta prueba consiste en cinco ejecuciones de procesos que compiten
+>> por regiones de compartidas. Para sincronizar los elementos se utilizan
+>> semáforos para proteger las regiones de exclusión mútua.
+>> 
+>> En esta prueba NO SE HAN DE PRODUCIR bloqueos entre los solicitantes.
+>> Fichero: SENCILLO
+A: LOCK CERROJO
+B: RECEIVE
+A: RECEIVE
+# A tiene el cerrojo
+A: UNLOCK CERROJO
+>> Ejecutando: ./controlador SENCILLO $TICK
+>> Comparando salidas
+>> A: [LOCK CERROJO]-> A{TICK|SEND(LOCK,B)} B{--}					      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}			      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK|MUTEX(CERROJO)} B{--}			      <
+>> # A tiene el cerrojo								      <
+>> A: [UNLOCK CERROJO]-> A{--} B{--}						      <
+>> Fichero: CLISERV
+# El servidor es un recurso compartido, pero
+# sólo hay un cliente que lo solicite.
+# El semáforo que protege al servidor se denomina L
+CLI: EVENT
+# Antes de solicitar el servicio pide el semáforo
+CLI: LOCK L
+SRV: RECEIVE
+CLI: RECEIVE
+CLI: MESSAGETO SRV
+SRV: RECEIVE
+SRV: EVENT
+SRV: MESSAGETO CLI
+CLI: RECEIVE
+# Ahora se libera el cerrojo.
+CLI: UNLOCK L
+CLI: GETCLOCK
+SRV: GETCLOCK
+>> Ejecutando: ./controlador CLISERV $TICK
+>> Comparando salidas
+>> # El servidor es un recurso compartido, pero					      <
+>> # sólo hay un cliente que lo solicite.						      <
+>> # El semáforo que protege al servidor se denomina L				      <
+>> CLI: [EVENT]-> CLI{TICK} SRV{--}						      <
+>> # Antes de solicitar el servicio pide el semáforo				      <
+>> CLI: [LOCK L]-> CLI{TICK|SEND(LOCK,SRV)} SRV{--}				      <
+>> SRV: [RECEIVE]-> CLI{--} SRV{RECEIVE(LOCK,CLI)|TICK|TICK|SEND(OK,CLI)}		      <
+>> CLI: [RECEIVE]-> CLI{RECEIVE(OK,SRV)|TICK|MUTEX(L)} SRV{--}			      <
+>> CLI: [MESSAGETO SRV]-> CLI{TICK|SEND(MSG,SRV)} SRV{--}				      <
+>> SRV: [RECEIVE]-> CLI{--} SRV{RECEIVE(MSG,CLI)|TICK}				      <
+>> SRV: [EVENT]-> CLI{--} SRV{TICK}						      <
+>> SRV: [MESSAGETO CLI]-> CLI{--} SRV{TICK|SEND(MSG,CLI)}				      <
+>> CLI: [RECEIVE]-> CLI{RECEIVE(MSG,SRV)|TICK} SRV{--}				      <
+>> # Ahora se libera el cerrojo.							      <
+>> CLI: [UNLOCK L]-> CLI{--} SRV{--}						      <
+>> CLI: [GETCLOCK]-> CLI{LC[5,5]} SRV{--}						      <
+>> SRV: [GETCLOCK]-> CLI{--} SRV{LC[4,5]}						      <
+>> Fichero: CLICLISERV
+# El servidor es un recurso compartido, pero ahora
+# hay dos clientes que lo solicitan.
+# El semáforo que protege al servidor se denomina L
+CL1: EVENT
+CL2: EVENT
+# Antes de solicitar el servicio pide el semáforo
+CL1: LOCK L
+CL2: RECEIVE
+SRV: RECEIVE
+CL1: RECEIVE
+CL1: RECEIVE
+CL1: MESSAGETO SRV
+SRV: RECEIVE
+SRV: EVENT
+SRV: MESSAGETO CL1
+CL1: RECEIVE
+# Ahora se libera el cerrojo.
+CL1: UNLOCK L
+# Ahora lo hace le segundo cliente
+CL2: LOCK L
+SRV: RECEIVE
+CL2: RECEIVE
+CL1: RECEIVE
+CL2: RECEIVE
+CL2: MESSAGETO SRV
+SRV: RECEIVE
+SRV: EVENT
+SRV: MESSAGETO CL2
+CL2: RECEIVE
+# Ahora se libera el cerrojo.
+CL2: UNLOCK L
+CL1: GETCLOCK
+CL2: GETCLOCK
+SRV: GETCLOCK
+>> Ejecutando: ./controlador CLICLISERV $TICK
+>> Comparando salidas
+>> # El servidor es un recurso compartido, pero ahora				      <
+>> # hay dos clientes que lo solicitan.						      <
+>> # El semáforo que protege al servidor se denomina L				      <
+>> CL1: [EVENT]-> CL1{TICK} CL2{--} SRV{--}					      <
+>> CL2: [EVENT]-> CL1{--} CL2{TICK} SRV{--}					      <
+>> # Antes de solicitar el servicio pide el semáforo				      <
+>> CL1: [LOCK L]-> CL1{TICK|SEND(LOCK,CL2)|SEND(LOCK,SRV)} CL2{--} SRV{--}		      <
+>> CL2: [RECEIVE]-> CL1{--} CL2{RECEIVE(LOCK,CL1)|TICK|TICK|SEND(OK,CL1)} SRV{--}	      <
+>> SRV: [RECEIVE]-> CL1{--} CL2{--} SRV{RECEIVE(LOCK,CL1)|TICK|TICK|SEND(OK,CL1)}	      <
+>> CL1: [RECEIVE]-> CL1{RECEIVE(OK,CL2)|TICK} CL2{--} SRV{--}			      <
+>> CL1: [RECEIVE]-> CL1{RECEIVE(OK,SRV)|TICK|MUTEX(L)} CL2{--} SRV{--}		      <
+>> CL1: [MESSAGETO SRV]-> CL1{TICK|SEND(MSG,SRV)} CL2{--} SRV{--}			      <
+>> SRV: [RECEIVE]-> CL1{--} CL2{--} SRV{RECEIVE(MSG,CL1)|TICK}			      <
+>> SRV: [EVENT]-> CL1{--} CL2{--} SRV{TICK}					      <
+>> SRV: [MESSAGETO CL1]-> CL1{--} CL2{--} SRV{TICK|SEND(MSG,CL1)}			      <
+>> CL1: [RECEIVE]-> CL1{RECEIVE(MSG,SRV)|TICK} CL2{--} SRV{--}			      <
+>> # Ahora se libera el cerrojo.							      <
+>> CL1: [UNLOCK L]-> CL1{--} CL2{--} SRV{--}					      <
+>> # Ahora lo hace le segundo cliente						      <
+>> CL2: [LOCK L]-> CL1{--} CL2{TICK|SEND(LOCK,CL1)|SEND(LOCK,SRV)} SRV{--}		      <
+>> SRV: [RECEIVE]-> CL1{--} CL2{--} SRV{RECEIVE(LOCK,CL2)|TICK|TICK|SEND(OK,CL2)}	      <
+>> CL2: [RECEIVE]-> CL1{--} CL2{RECEIVE(OK,SRV)|TICK} SRV{--}			      <
+>> CL1: [RECEIVE]-> CL1{RECEIVE(LOCK,CL2)|TICK|TICK|SEND(OK,CL2)} CL2{--} SRV{--}	      <
+>> CL2: [RECEIVE]-> CL1{--} CL2{RECEIVE(OK,CL1)|TICK|MUTEX(L)} SRV{--}		      <
+>> CL2: [MESSAGETO SRV]-> CL1{--} CL2{TICK|SEND(MSG,SRV)} SRV{--}			      <
+>> SRV: [RECEIVE]-> CL1{--} CL2{--} SRV{RECEIVE(MSG,CL2)|TICK}			      <
+>> SRV: [EVENT]-> CL1{--} CL2{--} SRV{TICK}					      <
+>> SRV: [MESSAGETO CL2]-> CL1{--} CL2{--} SRV{TICK|SEND(MSG,CL2)}			      <
+>> CL2: [RECEIVE]-> CL1{--} CL2{RECEIVE(MSG,SRV)|TICK} SRV{--}			      <
+>> # Ahora se libera el cerrojo.							      <
+>> CL2: [UNLOCK L]-> CL1{--} CL2{--} SRV{--}					      <
+>> CL1: [GETCLOCK]-> CL1{LC[8,4,5]} CL2{--} SRV{--}				      <
+>> CL2: [GETCLOCK]-> CL1{--} CL2{LC[8,8,10]} SRV{--}				      <
+>> SRV: [GETCLOCK]-> CL1{--} CL2{--} SRV{LC[8,7,10]}				      <
+>> Fichero: D_LENTO
+# El semáforo SEM protege una región crítica 
+# entre cuatro procesos. El proceso D tarda en
+# recibir los mensajes.
+A: EVENT
+A: LOCK SEM
+B: RECEIVE
+C: RECEIVE
+A: RECEIVE
+A: RECEIVE
+B: EVENT
+B: MESSAGETO C
+C: RECEIVE
+C: EVENT
+C: EVENT
+D: RECEIVE
+A: RECEIVE
+A: EVENT
+A: EVENT
+A: EVENT
+A: UNLOCK SEM
+B: EVENT
+A: GETCLOCK
+B: GETCLOCK
+C: GETCLOCK
+D: GETCLOCK
+>> Ejecutando: ./controlador D_LENTO $TICK
+>> Comparando salidas
+>> # El semáforo SEM protege una región crítica 					      <
+>> # entre cuatro procesos. El proceso D tarda en					      <
+>> # recibir los mensajes.								      <
+>> A: [EVENT]-> A{TICK} B{--} C{--} D{--}						      <
+>> A: [LOCK SEM]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)|SEND(LOCK,D)} B{--} C{--} D{--}      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--} D{--}	      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} D{--}	      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK} B{--} C{--} D{--}				      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,C)|TICK} B{--} C{--} D{--}				      <
+>> B: [EVENT]-> A{--} B{TICK} C{--} D{--}						      <
+>> B: [MESSAGETO C]-> A{--} B{TICK|SEND(MSG,C)} C{--} D{--}			      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(MSG,B)|TICK} D{--}				      <
+>> C: [EVENT]-> A{--} B{--} C{TICK} D{--}						      <
+>> C: [EVENT]-> A{--} B{--} C{TICK} D{--}						      <
+>> D: [RECEIVE]-> A{--} B{--} C{--} D{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}	      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,D)|TICK|MUTEX(SEM)} B{--} C{--} D{--}		      <
+>> A: [EVENT]-> A{TICK} B{--} C{--} D{--}						      <
+>> A: [EVENT]-> A{TICK} B{--} C{--} D{--}						      <
+>> A: [EVENT]-> A{TICK} B{--} C{--} D{--}						      <
+>> A: [UNLOCK SEM]-> A{--} B{--} C{--} D{--}					      <
+>> B: [EVENT]-> A{--} B{TICK} C{--} D{--}						      <
+>> A: [GETCLOCK]-> A{LC[8,2,2,2]} B{--} C{--} D{--}				      <
+>> B: [GETCLOCK]-> A{--} B{LC[2,5,0,0]} C{--} D{--}				      <
+>> C: [GETCLOCK]-> A{--} B{--} C{LC[2,4,5,0]} D{--}				      <
+>> D: [GETCLOCK]-> A{--} B{--} C{--} D{LC[2,0,0,2]}				      <
+>> Fichero: MSG_Y_LOCK
+A: MESSAGETO B
+A: MESSAGETO C
+B: LOCK SEM
+C: RECEIVE
+A: RECEIVE
+C: RECEIVE
+# Se reciben MSG(A), OK(A) y OK(C)
+B: RECEIVE
+B: RECEIVE
+B: RECEIVE
+B: EVENT
+B: UNLOCK SEM
+>> Ejecutando: ./controlador MSG_Y_LOCK $TICK
+>> Comparando salidas
+>> A: [MESSAGETO B]-> A{TICK|SEND(MSG,B)} B{--} C{--}				      <
+>> A: [MESSAGETO C]-> A{TICK|SEND(MSG,C)} B{--} C{--}				      <
+>> B: [LOCK SEM]-> A{--} B{TICK|SEND(LOCK,A)|SEND(LOCK,C)} C{--}			      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(MSG,A)|TICK}				      <
+>> A: [RECEIVE]-> A{RECEIVE(LOCK,B)|TICK|TICK|SEND(OK,B)} B{--} C{--}		      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,B)|TICK|TICK|SEND(OK,B)}		      <
+>> # Se reciben MSG(A), OK(A) y OK(C)						      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(MSG,A)|TICK} C{--}				      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK} C{--}				      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(OK,C)|TICK|MUTEX(SEM)} C{--}			      <
+>> B: [EVENT]-> A{--} B{TICK} C{--}						      <
+>> B: [UNLOCK SEM]-> A{--} B{--} C{--}						      <
+======================> opt_sin_bloqueo <====================
+>>>>>>>>>>>>>>   *********
+>>>>>>>>>>>>>>   * ERROR *
+>>>>>>>>>>>>>>   *********
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> A: [LOCK CERROJO]-> A{TICK|SEND(LOCK,B)} B{--}					      <
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}			      <
+A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK|MUTEX(CERROJO)} B{--}			      <
+# A tiene el cerrojo								      <
+A: [UNLOCK CERROJO]-> A{--} B{--}						      <
+# El servidor es un recurso compartido, pero					      <
+# sólo hay un cliente que lo solicite.						      <
+# El semáforo que protege al servidor se denomina L				      <
+CLI: [EVENT]-> CLI{TICK} SRV{--}						      <
+# Antes de solicitar el servicio pide el semáforo				      <
+CLI: [LOCK L]-> CLI{TICK|SEND(LOCK,SRV)} SRV{--}				      <
+SRV: [RECEIVE]-> CLI{--} SRV{RECEIVE(LOCK,CLI)|TICK|TICK|SEND(OK,CLI)}		      <
+CLI: [RECEIVE]-> CLI{RECEIVE(OK,SRV)|TICK|MUTEX(L)} SRV{--}			      <
+CLI: [MESSAGETO SRV]-> CLI{TICK|SEND(MSG,SRV)} SRV{--}				      <
+SRV: [RECEIVE]-> CLI{--} SRV{RECEIVE(MSG,CLI)|TICK}				      <
+SRV: [EVENT]-> CLI{--} SRV{TICK}						      <
+SRV: [MESSAGETO CLI]-> CLI{--} SRV{TICK|SEND(MSG,CLI)}				      <
+CLI: [RECEIVE]-> CLI{RECEIVE(MSG,SRV)|TICK} SRV{--}				      <
+# Ahora se libera el cerrojo.							      <
+CLI: [UNLOCK L]-> CLI{--} SRV{--}						      <
+CLI: [GETCLOCK]-> CLI{LC[5,5]} SRV{--}						      <
+SRV: [GETCLOCK]-> CLI{--} SRV{LC[4,5]}						      <
+# El servidor es un recurso compartido, pero ahora				      <
+# hay dos clientes que lo solicitan.						      <
+# El semáforo que protege al servidor se denomina L				      <
+CL1: [EVENT]-> CL1{TICK} CL2{--} SRV{--}					      <
+CL2: [EVENT]-> CL1{--} CL2{TICK} SRV{--}					      <
+# Antes de solicitar el servicio pide el semáforo				      <
+CL1: [LOCK L]-> CL1{TICK|SEND(LOCK,CL2)|SEND(LOCK,SRV)} CL2{--} SRV{--}		      <
+CL2: [RECEIVE]-> CL1{--} CL2{RECEIVE(LOCK,CL1)|TICK|TICK|SEND(OK,CL1)} SRV{--}	      <
+SRV: [RECEIVE]-> CL1{--} CL2{--} SRV{RECEIVE(LOCK,CL1)|TICK|TICK|SEND(OK,CL1)}	      <
+CL1: [RECEIVE]-> CL1{RECEIVE(OK,CL2)|TICK} CL2{--} SRV{--}			      <
+CL1: [RECEIVE]-> CL1{RECEIVE(OK,SRV)|TICK|MUTEX(L)} CL2{--} SRV{--}		      <
+CL1: [MESSAGETO SRV]-> CL1{TICK|SEND(MSG,SRV)} CL2{--} SRV{--}			      <
+SRV: [RECEIVE]-> CL1{--} CL2{--} SRV{RECEIVE(MSG,CL1)|TICK}			      <
+SRV: [EVENT]-> CL1{--} CL2{--} SRV{TICK}					      <
+SRV: [MESSAGETO CL1]-> CL1{--} CL2{--} SRV{TICK|SEND(MSG,CL1)}			      <
+CL1: [RECEIVE]-> CL1{RECEIVE(MSG,SRV)|TICK} CL2{--} SRV{--}			      <
+# Ahora se libera el cerrojo.							      <
+CL1: [UNLOCK L]-> CL1{--} CL2{--} SRV{--}					      <
+# Ahora lo hace le segundo cliente						      <
+CL2: [LOCK L]-> CL1{--} CL2{TICK|SEND(LOCK,CL1)|SEND(LOCK,SRV)} SRV{--}		      <
+SRV: [RECEIVE]-> CL1{--} CL2{--} SRV{RECEIVE(LOCK,CL2)|TICK|TICK|SEND(OK,CL2)}	      <
+CL2: [RECEIVE]-> CL1{--} CL2{RECEIVE(OK,SRV)|TICK} SRV{--}			      <
+CL1: [RECEIVE]-> CL1{RECEIVE(LOCK,CL2)|TICK|TICK|SEND(OK,CL2)} CL2{--} SRV{--}	      <
+CL2: [RECEIVE]-> CL1{--} CL2{RECEIVE(OK,CL1)|TICK|MUTEX(L)} SRV{--}		      <
+CL2: [MESSAGETO SRV]-> CL1{--} CL2{TICK|SEND(MSG,SRV)} SRV{--}			      <
+SRV: [RECEIVE]-> CL1{--} CL2{--} SRV{RECEIVE(MSG,CL2)|TICK}			      <
+SRV: [EVENT]-> CL1{--} CL2{--} SRV{TICK}					      <
+SRV: [MESSAGETO CL2]-> CL1{--} CL2{--} SRV{TICK|SEND(MSG,CL2)}			      <
+CL2: [RECEIVE]-> CL1{--} CL2{RECEIVE(MSG,SRV)|TICK} SRV{--}			      <
+# Ahora se libera el cerrojo.							      <
+CL2: [UNLOCK L]-> CL1{--} CL2{--} SRV{--}					      <
+CL1: [GETCLOCK]-> CL1{LC[8,4,5]} CL2{--} SRV{--}				      <
+CL2: [GETCLOCK]-> CL1{--} CL2{LC[8,8,10]} SRV{--}				      <
+SRV: [GETCLOCK]-> CL1{--} CL2{--} SRV{LC[8,7,10]}				      <
+# El semáforo SEM protege una región crítica 					      <
+# entre cuatro procesos. El proceso D tarda en					      <
+# recibir los mensajes.								      <
+A: [EVENT]-> A{TICK} B{--} C{--} D{--}						      <
+A: [LOCK SEM]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)|SEND(LOCK,D)} B{--} C{--} D{--}      <
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--} D{--}	      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} D{--}	      <
+A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK} B{--} C{--} D{--}				      <
+A: [RECEIVE]-> A{RECEIVE(OK,C)|TICK} B{--} C{--} D{--}				      <
+B: [EVENT]-> A{--} B{TICK} C{--} D{--}						      <
+B: [MESSAGETO C]-> A{--} B{TICK|SEND(MSG,C)} C{--} D{--}			      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(MSG,B)|TICK} D{--}				      <
+C: [EVENT]-> A{--} B{--} C{TICK} D{--}						      <
+C: [EVENT]-> A{--} B{--} C{TICK} D{--}						      <
+D: [RECEIVE]-> A{--} B{--} C{--} D{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}	      <
+A: [RECEIVE]-> A{RECEIVE(OK,D)|TICK|MUTEX(SEM)} B{--} C{--} D{--}		      <
+A: [EVENT]-> A{TICK} B{--} C{--} D{--}						      <
+A: [EVENT]-> A{TICK} B{--} C{--} D{--}						      <
+A: [EVENT]-> A{TICK} B{--} C{--} D{--}						      <
+A: [UNLOCK SEM]-> A{--} B{--} C{--} D{--}					      <
+B: [EVENT]-> A{--} B{TICK} C{--} D{--}						      <
+A: [GETCLOCK]-> A{LC[8,2,2,2]} B{--} C{--} D{--}				      <
+B: [GETCLOCK]-> A{--} B{LC[2,5,0,0]} C{--} D{--}				      <
+C: [GETCLOCK]-> A{--} B{--} C{LC[2,4,5,0]} D{--}				      <
+D: [GETCLOCK]-> A{--} B{--} C{--} D{LC[2,0,0,2]}				      <
+A: [MESSAGETO B]-> A{TICK|SEND(MSG,B)} B{--} C{--}				      <
+A: [MESSAGETO C]-> A{TICK|SEND(MSG,C)} B{--} C{--}				      <
+B: [LOCK SEM]-> A{--} B{TICK|SEND(LOCK,A)|SEND(LOCK,C)} C{--}			      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(MSG,A)|TICK}				      <
+A: [RECEIVE]-> A{RECEIVE(LOCK,B)|TICK|TICK|SEND(OK,B)} B{--} C{--}		      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,B)|TICK|TICK|SEND(OK,B)}		      <
+# Se reciben MSG(A), OK(A) y OK(C)						      <
+B: [RECEIVE]-> A{--} B{RECEIVE(MSG,A)|TICK} C{--}				      <
+B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK} C{--}				      <
+B: [RECEIVE]-> A{--} B{RECEIVE(OK,C)|TICK|MUTEX(SEM)} C{--}			      <
+B: [EVENT]-> A{--} B{TICK} C{--}						      <
+B: [UNLOCK SEM]-> A{--} B{--} C{--}						      <
+
+>>>>>>>>>>>>>> El formato de salida no es el esperado
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> PROGRAMA:       ./controlador MSG_Y_LOCK $TICK
+>>>>>>>>>>>>>> MANDATO/OPCIÓN: -
+>>>>>>>>>>>>>> SALIDA ESTÁNDAR:
+>>>>>>>>>>>>>> ERROR ESTÁNDAR:
+[1] *** Error in `./proceso': free(): invalid pointer: 0x000000000235b2e1 ***
+[2] ======= Backtrace: =========
+[3] /lib64/libc.so.6(+0x81299)[0x7fb8bd0c5299]
+[4] ./proceso[0x401acb]
+[5] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7fb8bd066555]
+[6] ./proceso[0x400b89]
+[7] ======= Memory map: ========
+[8] 00400000-00403000 r-xp 00000000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[9] 00602000-00603000 r--p 00002000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[10] 00603000-00604000 rw-p 00003000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[11] 0235b000-0237c000 rw-p 00000000 00:00 0                                  [heap]
+[12] 7fb8b8000000-7fb8b8021000 rw-p 00000000 00:00 0 
+[13] 7fb8b8021000-7fb8bc000000 ---p 00000000 00:00 0 
+[14] 7fb8bce2e000-7fb8bce43000 r-xp 00000000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[15] 7fb8bce43000-7fb8bd042000 ---p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[16] 7fb8bd042000-7fb8bd043000 r--p 00014000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[17] 7fb8bd043000-7fb8bd044000 rw-p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[18] 7fb8bd044000-7fb8bd207000 r-xp 00000000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[19] 7fb8bd207000-7fb8bd407000 ---p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[20] 7fb8bd407000-7fb8bd40b000 r--p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[21] 7fb8bd40b000-7fb8bd40d000 rw-p 001c7000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[22] 7fb8bd40d000-7fb8bd412000 rw-p 00000000 00:00 0 
+[23] 7fb8bd412000-7fb8bd429000 r-xp 00000000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[24] 7fb8bd429000-7fb8bd628000 ---p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[25] 7fb8bd628000-7fb8bd629000 r--p 00016000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[26] 7fb8bd629000-7fb8bd62a000 rw-p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[27] 7fb8bd62a000-7fb8bd62e000 rw-p 00000000 00:00 0 
+[28] 7fb8bd62e000-7fb8bd650000 r-xp 00000000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[29] 7fb8bd82c000-7fb8bd82f000 rw-p 00000000 00:00 0 
+[30] 7fb8bd84d000-7fb8bd84f000 rw-p 00000000 00:00 0 
+[31] 7fb8bd84f000-7fb8bd850000 r--p 00021000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[32] 7fb8bd850000-7fb8bd851000 rw-p 00022000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[33] 7fb8bd851000-7fb8bd852000 rw-p 00000000 00:00 0 
+[34] 7fff9842b000-7fff9844c000 rw-p 00000000 00:00 0                          [stack]
+[35] 7fff985d2000-7fff985d4000 r-xp 00000000 00:00 0                          [vdso]
+[36] ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+>>>>>>>>>>>>>>
+======================> opt_con_bloqueo <====================
+>> PRUEBA DE LAS FUNCIONALIDADES OPCIONALES (II - Semáforos con bloqueo)
+>> Esta prueba consiste en cinco ejecuciones de procesos que compiten
+>> por regiones de compartidas. Para sincronizar los elementos se utilizan
+>> semáforos para proteger las regiones de exclusión mútua.
+>> 
+>> En esta prueba SE PRODUCIRÁN bloqueos entre los solicitantes.
+>> Comparación de prioridades
+>> Fichero: SENCILLO
+A: LOCK CERROJO
+B: RECEIVE
+# B Solicita el cerrojo
+B: LOCK CERROJO
+A: RECEIVE
+A: RECEIVE
+# A tiene el cerrojo
+A: UNLOCK CERROJO
+B: RECEIVE
+# B tiene el cerrojo
+B: UNLOCK CERROJO
+>> Ejecutando: ./controlador SENCILLO $TICK
+>> Comparando salidas
+>> A: [LOCK CERROJO]-> A{TICK|SEND(LOCK,B)} B{--}					      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}			      <
+>> # B Solicita el cerrojo								      <
+>> B: [LOCK CERROJO]-> A{--} B{TICK|SEND(LOCK,A)}					      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK|MUTEX(CERROJO)} B{--}			      <
+>> A: [RECEIVE]-> A{RECEIVE(LOCK,B)|TICK} B{--}					      <
+>> # A tiene el cerrojo								      <
+>> A: [UNLOCK CERROJO]-> A{TICK|SEND(OK,B)} B{--}					      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK|MUTEX(CERROJO)}			      <
+>> # B tiene el cerrojo								      <
+>> B: [UNLOCK CERROJO]-> A{--} B{--}						      <
+>> Semáforo ya otorgado (espera finalización)
+>> Fichero: SENCILLO2
+A: LOCK CERROJO
+B: RECEIVE
+A: RECEIVE
+# B Solicita el cerrojo
+B: LOCK CERROJO
+A: RECEIVE
+# A tiene el cerrojo
+A: UNLOCK CERROJO
+B: RECEIVE
+# B tiene el cerrojo
+B: UNLOCK CERROJO
+>> Ejecutando: ./controlador SENCILLO2 $TICK
+>> Comparando salidas
+>> A: [LOCK CERROJO]-> A{TICK|SEND(LOCK,B)} B{--}					      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}			      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK|MUTEX(CERROJO)} B{--}			      <
+>> # B Solicita el cerrojo								      <
+>> B: [LOCK CERROJO]-> A{--} B{TICK|SEND(LOCK,A)}					      <
+>> A: [RECEIVE]-> A{RECEIVE(LOCK,B)|TICK} B{--}					      <
+>> # A tiene el cerrojo								      <
+>> A: [UNLOCK CERROJO]-> A{TICK|SEND(OK,B)} B{--}					      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK|MUTEX(CERROJO)}			      <
+>> # B tiene el cerrojo								      <
+>> B: [UNLOCK CERROJO]-> A{--} B{--}						      <
+>> Fichero: PRIORIDAD_PID
+A: MESSAGETO C
+B: MESSAGETO C
+C: RECEIVE
+C: RECEIVE
+C: MESSAGETO A
+A: RECEIVE
+# Despues de una fase inicial los relojes
+# lógicos se han intercambiado.
+A: GETCLOCK
+B: GETCLOCK
+C: GETCLOCK
+# A y C compiten entre si.
+C: LOCK SEM
+A: LOCK SEM
+# Los dos eventos son concurrentes (no se
+# puede determinar precedencia). Gana A (por
+# tener menor número de proceso).
+# B (OK a los dos)
+B: RECEIVE
+B: RECEIVE
+# A no responde a C.
+A: RECEIVE
+# C Responde OK a A
+C: RECEIVE
+# A Recibe todos los OK (B y C: Entra)
+A: RECEIVE
+A: RECEIVE
+A: EVENT
+A: UNLOCK SEM
+# C Recibe todos los OK (B y A: Entra)
+C: RECEIVE
+C: RECEIVE
+C: UNLOCK SEM
+A: GETCLOCK
+B: GETCLOCK
+C: GETCLOCK
+>> Ejecutando: ./controlador PRIORIDAD_PID $TICK
+>> Comparando salidas
+>> A: [MESSAGETO C]-> A{TICK|SEND(MSG,C)} B{--} C{--}				      <
+>> B: [MESSAGETO C]-> A{--} B{TICK|SEND(MSG,C)} C{--}				      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(MSG,A)|TICK}				      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(MSG,B)|TICK}				      <
+>> C: [MESSAGETO A]-> A{--} B{--} C{TICK|SEND(MSG,A)}				      <
+>> A: [RECEIVE]-> A{RECEIVE(MSG,C)|TICK} B{--} C{--}				      <
+>> # Despues de una fase inicial los relojes					      <
+>> # lógicos se han intercambiado.							      <
+>> A: [GETCLOCK]-> A{LC[2,1,3]} B{--} C{--}					      <
+>> B: [GETCLOCK]-> A{--} B{LC[0,1,0]} C{--}					      <
+>> C: [GETCLOCK]-> A{--} B{--} C{LC[1,1,3]}					      <
+>> # A y C compiten entre si.							      <
+>> C: [LOCK SEM]-> A{--} B{--} C{TICK|SEND(LOCK,A)|SEND(LOCK,B)}			      <
+>> A: [LOCK SEM]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)} B{--} C{--}			      <
+>> # Los dos eventos son concurrentes (no se					      <
+>> # puede determinar precedencia). Gana A (por					      <
+>> # tener menor número de proceso).						      <
+>> # B (OK a los dos)								      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,C)|TICK|TICK|SEND(OK,C)} C{--}		      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--}		      <
+>> # A no responde a C.								      <
+>> A: [RECEIVE]-> A{RECEIVE(LOCK,C)|TICK} B{--} C{--}				      <
+>> # C Responde OK a A								      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}		      <
+>> # A Recibe todos los OK (B y C: Entra)						      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK} B{--} C{--}				      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,C)|TICK|MUTEX(SEM)} B{--} C{--}			      <
+>> A: [EVENT]-> A{TICK} B{--} C{--}						      <
+>> A: [UNLOCK SEM]-> A{TICK|SEND(OK,C)} B{--} C{--}				      <
+>> # C Recibe todos los OK (B y A: Entra)						      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,B)|TICK}				      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,A)|TICK|MUTEX(SEM)}			      <
+>> C: [UNLOCK SEM]-> A{--} B{--} C{--}						      <
+>> A: [GETCLOCK]-> A{LC[8,5,6]} B{--} C{--}					      <
+>> B: [GETCLOCK]-> A{--} B{LC[3,5,4]} C{--}					      <
+>> C: [GETCLOCK]-> A{--} B{--} C{LC[8,5,8]}					      <
+>> Si el siguiente ejemplo no considera de forma correcta la
+>> prioridad de los relojes lógicos uno de los procesos
+>> sufrirá de inanición.
+>> Fichero: INANICION
+A: EVENT
+B: EVENT
+C: LOCK SEM
+C: GETCLOCK
+A: LOCK SEM
+# Por prioridad de PID entraría A 
+C: RECEIVE
+A: RECEIVE
+A: RECEIVE
+# B Responde OK a A y C
+B: RECEIVE
+B: RECEIVE
+A: RECEIVE
+C: RECEIVE
+# A obtiene el semaforo
+B: LOCK SEM
+B: GETCLOCK
+# C recibirá el mensaje pero no 
+# respondera (C tiene prioridad)
+C: RECEIVE
+# A termina 
+A: UNLOCK SEM
+# A daría paso a C
+A: RECEIVE
+C: RECEIVE
+# C entra en la región
+C: UNLOCK SEM
+B: RECEIVE
+B: RECEIVE
+B: UNLOCK SEM
+>> Ejecutando: ./controlador INANICION $TICK
+>> Comparando salidas
+>> A: [EVENT]-> A{TICK} B{--} C{--}						      <
+>> B: [EVENT]-> A{--} B{TICK} C{--}						      <
+>> C: [LOCK SEM]-> A{--} B{--} C{TICK|SEND(LOCK,A)|SEND(LOCK,B)}			      <
+>> C: [GETCLOCK]-> A{--} B{--} C{LC[0,0,1]}					      <
+>> A: [LOCK SEM]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)} B{--} C{--}			      <
+>> # Por prioridad de PID entraría A 						      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}		      <
+>> A: [RECEIVE]-> A{RECEIVE(LOCK,C)|TICK} B{--} C{--}				      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,C)|TICK} B{--} C{--}				      <
+>> # B Responde OK a A y C								      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,C)|TICK|TICK|SEND(OK,C)} C{--}		      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--}		      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK|MUTEX(SEM)} B{--} C{--}			      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,B)|TICK}				      <
+>> # A obtiene el semaforo								      <
+>> B: [LOCK SEM]-> A{--} B{TICK|SEND(LOCK,A)|SEND(LOCK,C)} C{--}			      <
+>> B: [GETCLOCK]-> A{--} B{LC[2,6,1]} C{--}					      <
+>> # C recibirá el mensaje pero no 							      <
+>> # respondera (C tiene prioridad)						      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,B)|TICK}				      <
+>> # A termina 									      <
+>> A: [UNLOCK SEM]-> A{TICK|SEND(OK,C)} B{--} C{--}				      <
+>> # A daría paso a C								      <
+>> A: [RECEIVE]-> A{RECEIVE(LOCK,B)|TICK|TICK|SEND(OK,B)} B{--} C{--}		      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,A)|TICK|MUTEX(SEM)}			      <
+>> # C entra en la región								      <
+>> C: [UNLOCK SEM]-> A{--} B{--} C{TICK|SEND(OK,B)}				      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK} C{--}				      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(OK,C)|TICK|MUTEX(SEM)} C{--}			      <
+>> B: [UNLOCK SEM]-> A{--} B{--} C{--}						      <
+>> Este caso es similar al anterior, pero en esta situción un
+>> proceso entra dentro de la región crítica y recibe una petición
+>> de un nuevo proceso. Esto hace que al liberar el semáforo se
+>> deban emitir varios mensajes a los que esperan entrar en la
+>> región.
+>> 
+>> En este caso se da dos condiciones para no responder a una
+>> petición de LOCK, estas son:
+>> 1) un proceso recibe un mensaje cuando está en la región crítica.
+>> 2) la comparación de dos reloges lógicos determina la prioridad.
+>> Fichero: INANICION2
+A: EVENT
+B: EVENT
+C: LOCK SEM
+C: GETCLOCK
+A: LOCK SEM
+# B Responde OK a A y C
+B: RECEIVE
+B: RECEIVE
+# Por prioridad de PID entraría A 
+C: RECEIVE
+# A recibiría:
+# - LOCK(C) -> encola petición
+# - OK(B) y OK(C) -> cierra mutex
+# A obtiene el semaforo
+A: RECEIVE
+A: RECEIVE
+A: RECEIVE
+# C recibe el OK de B (falt A que esta en la
+# región crítica).
+C: RECEIVE
+# Ahora B tambien quiere entrar en la región.
+B: LOCK SEM
+B: GETCLOCK
+# C recibirá el mensaje pero no 
+# respondera (C tiene prioridad) -> encola pecición.
+C: RECEIVE
+# A no responde porque está en la 
+# región crítica (encola la petición) 
+A: RECEIVE
+# A termina (debe liberar los dos mensajes que tiene
+# encolados a esperas de entrar en la región).
+A: UNLOCK SEM
+C: RECEIVE
+B: RECEIVE
+# C entra en la región
+C: UNLOCK SEM
+B: RECEIVE
+B: UNLOCK SEM
+>> Ejecutando: ./controlador INANICION2 $TICK
+>> Comparando salidas
+>> A: [EVENT]-> A{TICK} B{--} C{--}						      <
+>> B: [EVENT]-> A{--} B{TICK} C{--}						      <
+>> C: [LOCK SEM]-> A{--} B{--} C{TICK|SEND(LOCK,A)|SEND(LOCK,B)}			      <
+>> C: [GETCLOCK]-> A{--} B{--} C{LC[0,0,1]}					      <
+>> A: [LOCK SEM]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)} B{--} C{--}			      <
+>> # B Responde OK a A y C								      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,C)|TICK|TICK|SEND(OK,C)} C{--}		      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--}		      <
+>> # Por prioridad de PID entraría A 						      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}		      <
+>> # A recibiría:									      <
+>> # - LOCK(C) -> encola petición							      <
+>> # - OK(B) y OK(C) -> cierra mutex						      <
+>> # A obtiene el semaforo								      <
+>> A: [RECEIVE]-> A{RECEIVE(LOCK,C)|TICK} B{--} C{--}				      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK} B{--} C{--}				      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,C)|TICK|MUTEX(SEM)} B{--} C{--}			      <
+>> # C recibe el OK de B (falt A que esta en la					      <
+>> # región crítica).								      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,B)|TICK}				      <
+>> # Ahora B tambien quiere entrar en la región.					      <
+>> B: [LOCK SEM]-> A{--} B{TICK|SEND(LOCK,A)|SEND(LOCK,C)} C{--}			      <
+>> B: [GETCLOCK]-> A{--} B{LC[2,6,1]} C{--}					      <
+>> # C recibirá el mensaje pero no 							      <
+>> # respondera (C tiene prioridad) -> encola pecición.				      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,B)|TICK}				      <
+>> # A no responde porque está en la 						      <
+>> # región crítica (encola la petición) 						      <
+>> A: [RECEIVE]-> A{RECEIVE(LOCK,B)|TICK} B{--} C{--}				      <
+>> # A termina (debe liberar los dos mensajes que tiene				      <
+>> # encolados a esperas de entrar en la región).					      <
+>> A: [UNLOCK SEM]-> A{TICK|SEND(OK,C)|TICK|SEND(OK,B)} B{--} C{--}		      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,A)|TICK|MUTEX(SEM)}			      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK} C{--}				      <
+>> # C entra en la región								      <
+>> C: [UNLOCK SEM]-> A{--} B{--} C{TICK|SEND(OK,B)}				      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(OK,C)|TICK|MUTEX(SEM)} C{--}			      <
+>> B: [UNLOCK SEM]-> A{--} B{--} C{--}						      <
+======================> opt_con_bloqueo <====================
+>>>>>>>>>>>>>>   *********
+>>>>>>>>>>>>>>   * ERROR *
+>>>>>>>>>>>>>>   *********
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> A: [LOCK CERROJO]-> A{TICK|SEND(LOCK,B)} B{--}					      <
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}			      <
+# B Solicita el cerrojo								      <
+B: [LOCK CERROJO]-> A{--} B{TICK|SEND(LOCK,A)}					      <
+A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK|MUTEX(CERROJO)} B{--}			      <
+A: [RECEIVE]-> A{RECEIVE(LOCK,B)|TICK} B{--}					      <
+# A tiene el cerrojo								      <
+A: [UNLOCK CERROJO]-> A{TICK|SEND(OK,B)} B{--}					      <
+B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK|MUTEX(CERROJO)}			      <
+# B tiene el cerrojo								      <
+B: [UNLOCK CERROJO]-> A{--} B{--}						      <
+A: [LOCK CERROJO]-> A{TICK|SEND(LOCK,B)} B{--}					      <
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}			      <
+A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK|MUTEX(CERROJO)} B{--}			      <
+# B Solicita el cerrojo								      <
+B: [LOCK CERROJO]-> A{--} B{TICK|SEND(LOCK,A)}					      <
+A: [RECEIVE]-> A{RECEIVE(LOCK,B)|TICK} B{--}					      <
+# A tiene el cerrojo								      <
+A: [UNLOCK CERROJO]-> A{TICK|SEND(OK,B)} B{--}					      <
+B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK|MUTEX(CERROJO)}			      <
+# B tiene el cerrojo								      <
+B: [UNLOCK CERROJO]-> A{--} B{--}						      <
+A: [MESSAGETO C]-> A{TICK|SEND(MSG,C)} B{--} C{--}				      <
+B: [MESSAGETO C]-> A{--} B{TICK|SEND(MSG,C)} C{--}				      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(MSG,A)|TICK}				      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(MSG,B)|TICK}				      <
+C: [MESSAGETO A]-> A{--} B{--} C{TICK|SEND(MSG,A)}				      <
+A: [RECEIVE]-> A{RECEIVE(MSG,C)|TICK} B{--} C{--}				      <
+# Despues de una fase inicial los relojes					      <
+# lógicos se han intercambiado.							      <
+A: [GETCLOCK]-> A{LC[2,1,3]} B{--} C{--}					      <
+B: [GETCLOCK]-> A{--} B{LC[0,1,0]} C{--}					      <
+C: [GETCLOCK]-> A{--} B{--} C{LC[1,1,3]}					      <
+# A y C compiten entre si.							      <
+C: [LOCK SEM]-> A{--} B{--} C{TICK|SEND(LOCK,A)|SEND(LOCK,B)}			      <
+A: [LOCK SEM]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)} B{--} C{--}			      <
+# Los dos eventos son concurrentes (no se					      <
+# puede determinar precedencia). Gana A (por					      <
+# tener menor número de proceso).						      <
+# B (OK a los dos)								      <
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,C)|TICK|TICK|SEND(OK,C)} C{--}		      <
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--}		      <
+# A no responde a C.								      <
+A: [RECEIVE]-> A{RECEIVE(LOCK,C)|TICK} B{--} C{--}				      <
+# C Responde OK a A								      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}		      <
+# A Recibe todos los OK (B y C: Entra)						      <
+A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK} B{--} C{--}				      <
+A: [RECEIVE]-> A{RECEIVE(OK,C)|TICK|MUTEX(SEM)} B{--} C{--}			      <
+A: [EVENT]-> A{TICK} B{--} C{--}						      <
+A: [UNLOCK SEM]-> A{TICK|SEND(OK,C)} B{--} C{--}				      <
+# C Recibe todos los OK (B y A: Entra)						      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,B)|TICK}				      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,A)|TICK|MUTEX(SEM)}			      <
+C: [UNLOCK SEM]-> A{--} B{--} C{--}						      <
+A: [GETCLOCK]-> A{LC[8,5,6]} B{--} C{--}					      <
+B: [GETCLOCK]-> A{--} B{LC[3,5,4]} C{--}					      <
+C: [GETCLOCK]-> A{--} B{--} C{LC[8,5,8]}					      <
+A: [EVENT]-> A{TICK} B{--} C{--}						      <
+B: [EVENT]-> A{--} B{TICK} C{--}						      <
+C: [LOCK SEM]-> A{--} B{--} C{TICK|SEND(LOCK,A)|SEND(LOCK,B)}			      <
+C: [GETCLOCK]-> A{--} B{--} C{LC[0,0,1]}					      <
+A: [LOCK SEM]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)} B{--} C{--}			      <
+# Por prioridad de PID entraría A 						      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}		      <
+A: [RECEIVE]-> A{RECEIVE(LOCK,C)|TICK} B{--} C{--}				      <
+A: [RECEIVE]-> A{RECEIVE(OK,C)|TICK} B{--} C{--}				      <
+# B Responde OK a A y C								      <
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,C)|TICK|TICK|SEND(OK,C)} C{--}		      <
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--}		      <
+A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK|MUTEX(SEM)} B{--} C{--}			      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,B)|TICK}				      <
+# A obtiene el semaforo								      <
+B: [LOCK SEM]-> A{--} B{TICK|SEND(LOCK,A)|SEND(LOCK,C)} C{--}			      <
+B: [GETCLOCK]-> A{--} B{LC[2,6,1]} C{--}					      <
+# C recibirá el mensaje pero no 							      <
+# respondera (C tiene prioridad)						      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,B)|TICK}				      <
+# A termina 									      <
+A: [UNLOCK SEM]-> A{TICK|SEND(OK,C)} B{--} C{--}				      <
+# A daría paso a C								      <
+A: [RECEIVE]-> A{RECEIVE(LOCK,B)|TICK|TICK|SEND(OK,B)} B{--} C{--}		      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,A)|TICK|MUTEX(SEM)}			      <
+# C entra en la región								      <
+C: [UNLOCK SEM]-> A{--} B{--} C{TICK|SEND(OK,B)}				      <
+B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK} C{--}				      <
+B: [RECEIVE]-> A{--} B{RECEIVE(OK,C)|TICK|MUTEX(SEM)} C{--}			      <
+B: [UNLOCK SEM]-> A{--} B{--} C{--}						      <
+A: [EVENT]-> A{TICK} B{--} C{--}						      <
+B: [EVENT]-> A{--} B{TICK} C{--}						      <
+C: [LOCK SEM]-> A{--} B{--} C{TICK|SEND(LOCK,A)|SEND(LOCK,B)}			      <
+C: [GETCLOCK]-> A{--} B{--} C{LC[0,0,1]}					      <
+A: [LOCK SEM]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)} B{--} C{--}			      <
+# B Responde OK a A y C								      <
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,C)|TICK|TICK|SEND(OK,C)} C{--}		      <
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--}		      <
+# Por prioridad de PID entraría A 						      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}		      <
+# A recibiría:									      <
+# - LOCK(C) -> encola petición							      <
+# - OK(B) y OK(C) -> cierra mutex						      <
+# A obtiene el semaforo								      <
+A: [RECEIVE]-> A{RECEIVE(LOCK,C)|TICK} B{--} C{--}				      <
+A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK} B{--} C{--}				      <
+A: [RECEIVE]-> A{RECEIVE(OK,C)|TICK|MUTEX(SEM)} B{--} C{--}			      <
+# C recibe el OK de B (falt A que esta en la					      <
+# región crítica).								      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,B)|TICK}				      <
+# Ahora B tambien quiere entrar en la región.					      <
+B: [LOCK SEM]-> A{--} B{TICK|SEND(LOCK,A)|SEND(LOCK,C)} C{--}			      <
+B: [GETCLOCK]-> A{--} B{LC[2,6,1]} C{--}					      <
+# C recibirá el mensaje pero no 							      <
+# respondera (C tiene prioridad) -> encola pecición.				      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,B)|TICK}				      <
+# A no responde porque está en la 						      <
+# región crítica (encola la petición) 						      <
+A: [RECEIVE]-> A{RECEIVE(LOCK,B)|TICK} B{--} C{--}				      <
+# A termina (debe liberar los dos mensajes que tiene				      <
+# encolados a esperas de entrar en la región).					      <
+A: [UNLOCK SEM]-> A{TICK|SEND(OK,C)|TICK|SEND(OK,B)} B{--} C{--}		      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,A)|TICK|MUTEX(SEM)}			      <
+B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK} C{--}				      <
+# C entra en la región								      <
+C: [UNLOCK SEM]-> A{--} B{--} C{TICK|SEND(OK,B)}				      <
+B: [RECEIVE]-> A{--} B{RECEIVE(OK,C)|TICK|MUTEX(SEM)} C{--}			      <
+B: [UNLOCK SEM]-> A{--} B{--} C{--}						      <
+
+>>>>>>>>>>>>>> El formato de salida no es el esperado
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> PROGRAMA:       ./controlador INANICION2 $TICK
+>>>>>>>>>>>>>> MANDATO/OPCIÓN: -
+>>>>>>>>>>>>>> SALIDA ESTÁNDAR:
+>>>>>>>>>>>>>> ERROR ESTÁNDAR:
+[1] *** Error in `./proceso': free(): invalid pointer: 0x00000000017b32e6 ***
+[2] ======= Backtrace: =========
+[3] /lib64/libc.so.6(+0x81299)[0x7ff3e4e69299]
+[4] ./proceso[0x401acb]
+[5] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7ff3e4e0a555]
+[6] ./proceso[0x400b89]
+[7] ======= Memory map: ========
+[8] 00400000-00403000 r-xp 00000000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[9] 00602000-00603000 r--p 00002000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[10] 00603000-00604000 rw-p 00003000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[11] 017b3000-017d4000 rw-p 00000000 00:00 0                                  [heap]
+[12] 7ff3e0000000-7ff3e0021000 rw-p 00000000 00:00 0 
+[13] 7ff3e0021000-7ff3e4000000 ---p 00000000 00:00 0 
+[14] 7ff3e4bd2000-7ff3e4be7000 r-xp 00000000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[15] 7ff3e4be7000-7ff3e4de6000 ---p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[16] 7ff3e4de6000-7ff3e4de7000 r--p 00014000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[17] 7ff3e4de7000-7ff3e4de8000 rw-p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[18] 7ff3e4de8000-7ff3e4fab000 r-xp 00000000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[19] 7ff3e4fab000-7ff3e51ab000 ---p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[20] 7ff3e51ab000-7ff3e51af000 r--p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[21] 7ff3e51af000-7ff3e51b1000 rw-p 001c7000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[22] 7ff3e51b1000-7ff3e51b6000 rw-p 00000000 00:00 0 
+[23] 7ff3e51b6000-7ff3e51cd000 r-xp 00000000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[24] 7ff3e51cd000-7ff3e53cc000 ---p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[25] 7ff3e53cc000-7ff3e53cd000 r--p 00016000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[26] 7ff3e53cd000-7ff3e53ce000 rw-p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[27] 7ff3e53ce000-7ff3e53d2000 rw-p 00000000 00:00 0 
+[28] 7ff3e53d2000-7ff3e53f4000 r-xp 00000000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[29] 7ff3e55d0000-7ff3e55d3000 rw-p 00000000 00:00 0 
+[30] 7ff3e55f1000-7ff3e55f3000 rw-p 00000000 00:00 0 
+[31] 7ff3e55f3000-7ff3e55f4000 r--p 00021000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[32] 7ff3e55f4000-7ff3e55f5000 rw-p 00022000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[33] 7ff3e55f5000-7ff3e55f6000 rw-p 00000000 00:00 0 
+[34] 7ffcb3b77000-7ffcb3b98000 rw-p 00000000 00:00 0                          [stack]
+[35] 7ffcb3bc1000-7ffcb3bc3000 r-xp 00000000 00:00 0                          [vdso]
+[36] ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+[37] *** Error in `./proceso': free(): invalid pointer: 0x0000000000ab72e6 ***
+[38] ======= Backtrace: =========
+[39] /lib64/libc.so.6(+0x81299)[0x7efe3b744299]
+[40] ./proceso[0x401acb]
+[41] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7efe3b6e5555]
+[42] ./proceso[0x400b89]
+[43] ======= Memory map: ========
+[44] 00400000-00403000 r-xp 00000000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[45] 00602000-00603000 r--p 00002000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[46] 00603000-00604000 rw-p 00003000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[47] 00ab7000-00ad8000 rw-p 00000000 00:00 0                                  [heap]
+[48] 7efe34000000-7efe34021000 rw-p 00000000 00:00 0 
+[49] 7efe34021000-7efe38000000 ---p 00000000 00:00 0 
+[50] 7efe3b4ad000-7efe3b4c2000 r-xp 00000000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[51] 7efe3b4c2000-7efe3b6c1000 ---p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[52] 7efe3b6c1000-7efe3b6c2000 r--p 00014000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[53] 7efe3b6c2000-7efe3b6c3000 rw-p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[54] 7efe3b6c3000-7efe3b886000 r-xp 00000000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[55] 7efe3b886000-7efe3ba86000 ---p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[56] 7efe3ba86000-7efe3ba8a000 r--p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[57] 7efe3ba8a000-7efe3ba8c000 rw-p 001c7000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[58] 7efe3ba8c000-7efe3ba91000 rw-p 00000000 00:00 0 
+[59] 7efe3ba91000-7efe3baa8000 r-xp 00000000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[60] 7efe3baa8000-7efe3bca7000 ---p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[61] 7efe3bca7000-7efe3bca8000 r--p 00016000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[62] 7efe3bca8000-7efe3bca9000 rw-p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[63] 7efe3bca9000-7efe3bcad000 rw-p 00000000 00:00 0 
+[64] 7efe3bcad000-7efe3bccf000 r-xp 00000000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[65] 7efe3beab000-7efe3beae000 rw-p 00000000 00:00 0 
+[66] 7efe3becc000-7efe3bece000 rw-p 00000000 00:00 0 
+[67] 7efe3bece000-7efe3becf000 r--p 00021000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[68] 7efe3becf000-7efe3bed0000 rw-p 00022000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[69] 7efe3bed0000-7efe3bed1000 rw-p 00000000 00:00 0 
+[70] 7ffc53187000-7ffc531a8000 rw-p 00000000 00:00 0                          [stack]
+[71] 7ffc531f6000-7ffc531f8000 r-xp 00000000 00:00 0                          [vdso]
+[72] ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+[73] *** Error in `./proceso': free(): invalid pointer: 0x0000000001ea42e3 ***
+[74] ======= Backtrace: =========
+[75] /lib64/libc.so.6(+0x81299)[0x7fa36551c299]
+[76] ./proceso[0x401acb]
+[77] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7fa3654bd555]
+[78] ./proceso[0x400b89]
+[79] ======= Memory map: ========
+[80] 00400000-00403000 r-xp 00000000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[81] 00602000-00603000 r--p 00002000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[82] 00603000-00604000 rw-p 00003000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[83] 01ea4000-01ec5000 rw-p 00000000 00:00 0                                  [heap]
+[84] 7fa360000000-7fa360021000 rw-p 00000000 00:00 0 
+[85] 7fa360021000-7fa364000000 ---p 00000000 00:00 0 
+[86] 7fa365285000-7fa36529a000 r-xp 00000000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[87] 7fa36529a000-7fa365499000 ---p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[88] 7fa365499000-7fa36549a000 r--p 00014000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[89] 7fa36549a000-7fa36549b000 rw-p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[90] 7fa36549b000-7fa36565e000 r-xp 00000000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[91] 7fa36565e000-7fa36585e000 ---p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[92] 7fa36585e000-7fa365862000 r--p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[93] 7fa365862000-7fa365864000 rw-p 001c7000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[94] 7fa365864000-7fa365869000 rw-p 00000000 00:00 0 
+[95] 7fa365869000-7fa365880000 r-xp 00000000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[96] 7fa365880000-7fa365a7f000 ---p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[97] 7fa365a7f000-7fa365a80000 r--p 00016000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[98] 7fa365a80000-7fa365a81000 rw-p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[99] 7fa365a81000-7fa365a85000 rw-p 00000000 00:00 0 
+[100] 7fa365a85000-7fa365aa7000 r-xp 00000000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[101] 7fa365c83000-7fa365c86000 rw-p 00000000 00:00 0 
+[102] 7fa365ca4000-7fa365ca6000 rw-p 00000000 00:00 0 
+[103] 7fa365ca6000-7fa365ca7000 r--p 00021000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[104] 7fa365ca7000-7fa365ca8000 rw-p 00022000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[105] 7fa365ca8000-7fa365ca9000 rw-p 00000000 00:00 0 
+[106] 7fffff88e000-7fffff8af000 rw-p 00000000 00:00 0                          [stack]
+[107] 7fffff910000-7fffff912000 r-xp 00000000 00:00 0                          [vdso]
+[108] ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+>>>>>>>>>>>>>>
+======================> extra_multisemaforo <====================
+>> PRUEBA DE LAS FUNCIONALIDADES OPCIONALES (III - Varios semáforos)
+>> Esta prueba consiste en un ejemplo sencillo con varios semáforos.
+>> Se utilizarán tres semaforos S1, S2 y S3
+>> Fichero: MUTISEMAFORO
+A: EVENT
+B: EVENT
+C: EVENT
+# A solicita los semaforos S1 y S2
+A: LOCK S1
+A: GETCLOCK
+A: LOCK S2
+A: GETCLOCK
+# B Concede los dos semaforos
+B: RECEIVE
+B: RECEIVE
+A: RECEIVE
+A: RECEIVE
+# C Concede los dos semaforos
+C: RECEIVE
+C: RECEIVE
+A: RECEIVE
+A: RECEIVE
+# A consigue S1 y S2
+A: EVENT
+# B y C solicitan S3 y S2 (respectivamente)
+B: LOCK S3
+B: GETCLOCK
+C: LOCK S2
+C: GETCLOCK
+A: RECEIVE
+A: RECEIVE
+B: RECEIVE
+C: RECEIVE
+# C recibe sólo un OK (falta A)
+C: RECEIVE
+# B consigue S3 porque está libre
+B: RECEIVE
+B: RECEIVE
+B: EVENT
+# B libera el semáforo S3 y solicita S2
+B: UNLOCK S3
+B: LOCK S2
+B: GETCLOCK
+A: RECEIVE
+C: RECEIVE
+# A libera los dos semaforos
+A: UNLOCK S1
+A: UNLOCK S2
+B: RECEIVE
+C: RECEIVE
+# Entra C que estaba esperando con anterioridad.
+C: UNLOCK S2
+# C libera S2 y entra B
+B: RECEIVE
+B: UNLOCK S2
+>> Ejecutando: ./controlador MUTISEMAFORO $TICK
+>> Comparando salidas
+>> A: [EVENT]-> A{TICK} B{--} C{--}						      <
+>> B: [EVENT]-> A{--} B{TICK} C{--}						      <
+>> C: [EVENT]-> A{--} B{--} C{TICK}						      <
+>> # A solicita los semaforos S1 y S2						      <
+>> A: [LOCK S1]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)} B{--} C{--}			      <
+>> A: [GETCLOCK]-> A{LC[2,0,0]} B{--} C{--}					      <
+>> A: [LOCK S2]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)} B{--} C{--}			      <
+>> A: [GETCLOCK]-> A{LC[3,0,0]} B{--} C{--}					      <
+>> # B Concede los dos semaforos							      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--}		      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--}		      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK} B{--} C{--}				      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK} B{--} C{--}				      <
+>> # C Concede los dos semaforos							      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}		      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}		      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,C)|TICK|MUTEX(S1)} B{--} C{--}			      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,C)|TICK|MUTEX(S2)} B{--} C{--}			      <
+>> # A consigue S1 y S2								      <
+>> A: [EVENT]-> A{TICK} B{--} C{--}						      <
+>> # B y C solicitan S3 y S2 (respectivamente)					      <
+>> B: [LOCK S3]-> A{--} B{TICK|SEND(LOCK,A)|SEND(LOCK,C)} C{--}			      <
+>> B: [GETCLOCK]-> A{--} B{LC[3,6,0]} C{--}					      <
+>> C: [LOCK S2]-> A{--} B{--} C{TICK|SEND(LOCK,A)|SEND(LOCK,B)}			      <
+>> C: [GETCLOCK]-> A{--} B{--} C{LC[3,0,6]}					      <
+>> A: [RECEIVE]-> A{RECEIVE(LOCK,B)|TICK|TICK|SEND(OK,B)} B{--} C{--}		      <
+>> A: [RECEIVE]-> A{RECEIVE(LOCK,C)|TICK} B{--} C{--}				      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,C)|TICK|TICK|SEND(OK,C)} C{--}		      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,B)|TICK|TICK|SEND(OK,B)}		      <
+>> # C recibe sólo un OK (falta A)							      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,B)|TICK}				      <
+>> # B consigue S3 porque está libre						      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK} C{--}				      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(OK,C)|TICK|MUTEX(S3)} C{--}			      <
+>> B: [EVENT]-> A{--} B{TICK} C{--}						      <
+>> # B libera el semáforo S3 y solicita S2						      <
+>> B: [UNLOCK S3]-> A{--} B{--} C{--}						      <
+>> B: [LOCK S2]-> A{--} B{TICK|SEND(LOCK,A)|SEND(LOCK,C)} C{--}			      <
+>> B: [GETCLOCK]-> A{--} B{LC[10,12,8]} C{--}					      <
+>> A: [RECEIVE]-> A{RECEIVE(LOCK,B)|TICK} B{--} C{--}				      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,B)|TICK}				      <
+>> # A libera los dos semaforos							      <
+>> A: [UNLOCK S1]-> A{--} B{--} C{--}						      <
+>> A: [UNLOCK S2]-> A{TICK|SEND(OK,C)|TICK|SEND(OK,B)} B{--} C{--}			      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK} C{--}				      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,A)|TICK|MUTEX(S2)}			      <
+>> # Entra C que estaba esperando con anterioridad.				      <
+>> C: [UNLOCK S2]-> A{--} B{--} C{TICK|SEND(OK,B)}					      <
+>> # C libera S2 y entra B								      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(OK,C)|TICK|MUTEX(S2)} C{--}			      <
+>> B: [UNLOCK S2]-> A{--} B{--} C{--}						      <
+======================> extra_multisemaforo <====================
+>>>>>>>>>>>>>>   *********
+>>>>>>>>>>>>>>   * ERROR *
+>>>>>>>>>>>>>>   *********
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> A: [EVENT]-> A{TICK} B{--} C{--}						      <
+B: [EVENT]-> A{--} B{TICK} C{--}						      <
+C: [EVENT]-> A{--} B{--} C{TICK}						      <
+# A solicita los semaforos S1 y S2						      <
+A: [LOCK S1]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)} B{--} C{--}			      <
+A: [GETCLOCK]-> A{LC[2,0,0]} B{--} C{--}					      <
+A: [LOCK S2]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)} B{--} C{--}			      <
+A: [GETCLOCK]-> A{LC[3,0,0]} B{--} C{--}					      <
+# B Concede los dos semaforos							      <
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--}		      <
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--}		      <
+A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK} B{--} C{--}				      <
+A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK} B{--} C{--}				      <
+# C Concede los dos semaforos							      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}		      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}		      <
+A: [RECEIVE]-> A{RECEIVE(OK,C)|TICK|MUTEX(S1)} B{--} C{--}			      <
+A: [RECEIVE]-> A{RECEIVE(OK,C)|TICK|MUTEX(S2)} B{--} C{--}			      <
+# A consigue S1 y S2								      <
+A: [EVENT]-> A{TICK} B{--} C{--}						      <
+# B y C solicitan S3 y S2 (respectivamente)					      <
+B: [LOCK S3]-> A{--} B{TICK|SEND(LOCK,A)|SEND(LOCK,C)} C{--}			      <
+B: [GETCLOCK]-> A{--} B{LC[3,6,0]} C{--}					      <
+C: [LOCK S2]-> A{--} B{--} C{TICK|SEND(LOCK,A)|SEND(LOCK,B)}			      <
+C: [GETCLOCK]-> A{--} B{--} C{LC[3,0,6]}					      <
+A: [RECEIVE]-> A{RECEIVE(LOCK,B)|TICK|TICK|SEND(OK,B)} B{--} C{--}		      <
+A: [RECEIVE]-> A{RECEIVE(LOCK,C)|TICK} B{--} C{--}				      <
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,C)|TICK|TICK|SEND(OK,C)} C{--}		      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,B)|TICK|TICK|SEND(OK,B)}		      <
+# C recibe sólo un OK (falta A)							      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,B)|TICK}				      <
+# B consigue S3 porque está libre						      <
+B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK} C{--}				      <
+B: [RECEIVE]-> A{--} B{RECEIVE(OK,C)|TICK|MUTEX(S3)} C{--}			      <
+B: [EVENT]-> A{--} B{TICK} C{--}						      <
+# B libera el semáforo S3 y solicita S2						      <
+B: [UNLOCK S3]-> A{--} B{--} C{--}						      <
+B: [LOCK S2]-> A{--} B{TICK|SEND(LOCK,A)|SEND(LOCK,C)} C{--}			      <
+B: [GETCLOCK]-> A{--} B{LC[10,12,8]} C{--}					      <
+A: [RECEIVE]-> A{RECEIVE(LOCK,B)|TICK} B{--} C{--}				      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,B)|TICK}				      <
+# A libera los dos semaforos							      <
+A: [UNLOCK S1]-> A{--} B{--} C{--}						      <
+A: [UNLOCK S2]-> A{TICK|SEND(OK,C)|TICK|SEND(OK,B)} B{--} C{--}			      <
+B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK} C{--}				      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,A)|TICK|MUTEX(S2)}			      <
+# Entra C que estaba esperando con anterioridad.				      <
+C: [UNLOCK S2]-> A{--} B{--} C{TICK|SEND(OK,B)}					      <
+# C libera S2 y entra B								      <
+B: [RECEIVE]-> A{--} B{RECEIVE(OK,C)|TICK|MUTEX(S2)} C{--}			      <
+B: [UNLOCK S2]-> A{--} B{--} C{--}						      <
+
+>>>>>>>>>>>>>> El formato de salida no es el esperado
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> PROGRAMA:       ./controlador MUTISEMAFORO $TICK
+>>>>>>>>>>>>>> MANDATO/OPCIÓN: -
+>>>>>>>>>>>>>> SALIDA ESTÁNDAR:
+>>>>>>>>>>>>>> ERROR ESTÁNDAR:
+[1] *** Error in `./proceso': free(): invalid pointer: 0x00000000011dc2e6 ***
+[2] ======= Backtrace: =========
+[3] /lib64/libc.so.6(+0x81299)[0x7f886bde0299]
+[4] ./proceso[0x401acb]
+[5] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7f886bd81555]
+[6] ./proceso[0x400b89]
+[7] ======= Memory map: ========
+[8] 00400000-00403000 r-xp 00000000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[9] 00602000-00603000 r--p 00002000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[10] 00603000-00604000 rw-p 00003000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[11] 011dc000-011fd000 rw-p 00000000 00:00 0                                  [heap]
+[12] 7f8864000000-7f8864021000 rw-p 00000000 00:00 0 
+[13] 7f8864021000-7f8868000000 ---p 00000000 00:00 0 
+[14] 7f886bb49000-7f886bb5e000 r-xp 00000000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[15] 7f886bb5e000-7f886bd5d000 ---p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[16] 7f886bd5d000-7f886bd5e000 r--p 00014000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[17] 7f886bd5e000-7f886bd5f000 rw-p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[18] 7f886bd5f000-7f886bf22000 r-xp 00000000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[19] 7f886bf22000-7f886c122000 ---p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[20] 7f886c122000-7f886c126000 r--p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[21] 7f886c126000-7f886c128000 rw-p 001c7000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[22] 7f886c128000-7f886c12d000 rw-p 00000000 00:00 0 
+[23] 7f886c12d000-7f886c144000 r-xp 00000000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[24] 7f886c144000-7f886c343000 ---p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[25] 7f886c343000-7f886c344000 r--p 00016000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[26] 7f886c344000-7f886c345000 rw-p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[27] 7f886c345000-7f886c349000 rw-p 00000000 00:00 0 
+[28] 7f886c349000-7f886c36b000 r-xp 00000000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[29] 7f886c547000-7f886c54a000 rw-p 00000000 00:00 0 
+[30] 7f886c568000-7f886c56a000 rw-p 00000000 00:00 0 
+[31] 7f886c56a000-7f886c56b000 r--p 00021000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[32] 7f886c56b000-7f886c56c000 rw-p 00022000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[33] 7f886c56c000-7f886c56d000 rw-p 00000000 00:00 0 
+[34] 7fff2612a000-7fff2614b000 rw-p 00000000 00:00 0                          [stack]
+[35] 7fff26160000-7fff26162000 r-xp 00000000 00:00 0                          [vdso]
+[36] ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+[37] *** Error in `./proceso': free(): invalid pointer: 0x0000000000e762e6 ***
+[38] ======= Backtrace: =========
+[39] /lib64/libc.so.6(+0x81299)[0x7f2d6a27c299]
+[40] ./proceso[0x401acb]
+[41] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7f2d6a21d555]
+[42] ./proceso[0x400b89]
+[43] ======= Memory map: ========
+[44] 00400000-00403000 r-xp 00000000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[45] 00602000-00603000 r--p 00002000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[46] 00603000-00604000 rw-p 00003000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[47] 00e76000-00e97000 rw-p 00000000 00:00 0                                  [heap]
+[48] 7f2d64000000-7f2d64021000 rw-p 00000000 00:00 0 
+[49] 7f2d64021000-7f2d68000000 ---p 00000000 00:00 0 
+[50] 7f2d69fe5000-7f2d69ffa000 r-xp 00000000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[51] 7f2d69ffa000-7f2d6a1f9000 ---p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[52] 7f2d6a1f9000-7f2d6a1fa000 r--p 00014000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[53] 7f2d6a1fa000-7f2d6a1fb000 rw-p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[54] 7f2d6a1fb000-7f2d6a3be000 r-xp 00000000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[55] 7f2d6a3be000-7f2d6a5be000 ---p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[56] 7f2d6a5be000-7f2d6a5c2000 r--p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[57] 7f2d6a5c2000-7f2d6a5c4000 rw-p 001c7000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[58] 7f2d6a5c4000-7f2d6a5c9000 rw-p 00000000 00:00 0 
+[59] 7f2d6a5c9000-7f2d6a5e0000 r-xp 00000000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[60] 7f2d6a5e0000-7f2d6a7df000 ---p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[61] 7f2d6a7df000-7f2d6a7e0000 r--p 00016000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[62] 7f2d6a7e0000-7f2d6a7e1000 rw-p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[63] 7f2d6a7e1000-7f2d6a7e5000 rw-p 00000000 00:00 0 
+[64] 7f2d6a7e5000-7f2d6a807000 r-xp 00000000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[65] 7f2d6a9e3000-7f2d6a9e6000 rw-p 00000000 00:00 0 
+[66] 7f2d6aa04000-7f2d6aa06000 rw-p 00000000 00:00 0 
+[67] 7f2d6aa06000-7f2d6aa07000 r--p 00021000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[68] 7f2d6aa07000-7f2d6aa08000 rw-p 00022000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[69] 7f2d6aa08000-7f2d6aa09000 rw-p 00000000 00:00 0 
+[70] 7ffcd9a54000-7ffcd9a75000 rw-p 00000000 00:00 0                          [stack]
+[71] 7ffcd9aa0000-7ffcd9aa2000 r-xp 00000000 00:00 0                          [vdso]
+[72] ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+[73] *** Error in `./proceso': free(): invalid pointer: 0x0000000001da32e6 ***
+[74] ======= Backtrace: =========
+[75] /lib64/libc.so.6(+0x81299)[0x7f34ed1ae299]
+[76] ./proceso[0x401acb]
+[77] /lib64/libc.so.6(__libc_start_main+0xf5)[0x7f34ed14f555]
+[78] ./proceso[0x400b89]
+[79] ======= Memory map: ========
+[80] 00400000-00403000 r-xp 00000000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[81] 00602000-00603000 r--p 00002000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[82] 00603000-00604000 rw-p 00003000 00:29 3414204453                         /home2/datsi/ssoo/sd/dmutex/home.2019/y160336/WORK/proceso
+[83] 01da3000-01dc4000 rw-p 00000000 00:00 0                                  [heap]
+[84] 7f34e8000000-7f34e8021000 rw-p 00000000 00:00 0 
+[85] 7f34e8021000-7f34ec000000 ---p 00000000 00:00 0 
+[86] 7f34ecf17000-7f34ecf2c000 r-xp 00000000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[87] 7f34ecf2c000-7f34ed12b000 ---p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[88] 7f34ed12b000-7f34ed12c000 r--p 00014000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[89] 7f34ed12c000-7f34ed12d000 rw-p 00015000 fd:01 201563283                  /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+[90] 7f34ed12d000-7f34ed2f0000 r-xp 00000000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[91] 7f34ed2f0000-7f34ed4f0000 ---p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[92] 7f34ed4f0000-7f34ed4f4000 r--p 001c3000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[93] 7f34ed4f4000-7f34ed4f6000 rw-p 001c7000 fd:01 201333164                  /usr/lib64/libc-2.17.so
+[94] 7f34ed4f6000-7f34ed4fb000 rw-p 00000000 00:00 0 
+[95] 7f34ed4fb000-7f34ed512000 r-xp 00000000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[96] 7f34ed512000-7f34ed711000 ---p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[97] 7f34ed711000-7f34ed712000 r--p 00016000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[98] 7f34ed712000-7f34ed713000 rw-p 00017000 fd:01 201677423                  /usr/lib64/libpthread-2.17.so
+[99] 7f34ed713000-7f34ed717000 rw-p 00000000 00:00 0 
+[100] 7f34ed717000-7f34ed739000 r-xp 00000000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[101] 7f34ed915000-7f34ed918000 rw-p 00000000 00:00 0 
+[102] 7f34ed936000-7f34ed938000 rw-p 00000000 00:00 0 
+[103] 7f34ed938000-7f34ed939000 r--p 00021000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[104] 7f34ed939000-7f34ed93a000 rw-p 00022000 fd:01 201333110                  /usr/lib64/ld-2.17.so
+[105] 7f34ed93a000-7f34ed93b000 rw-p 00000000 00:00 0 
+[106] 7fff0ebef000-7fff0ec10000 rw-p 00000000 00:00 0                          [stack]
+[107] 7fff0ec37000-7fff0ec39000 r-xp 00000000 00:00 0                          [vdso]
+[108] ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+>>>>>>>>>>>>>>
+>>
+>>
+>> RESUMEN DE RESULTADO DE PRUEBAS
+>>
+>> Valor Prueba                 Resultado
+>> ----- ---------------------- -----------------------------
+>>  (15) base_independientes    ERROR: El formato de salida no es el esperado +0/+15
+>>  (25) base_mensajes          ERROR: El formato de salida no es el esperado +0/+25
+>>  (15) opt_sin_bloqueo        ERROR: El formato de salida no es el esperado +0/+15
+>>  (25) opt_con_bloqueo        ERROR: El formato de salida no es el esperado +0/+25
+>>  (20) extra_multisemaforo    ERROR: El formato de salida no es el esperado +0/+20
+>>
+>> NOTA FINAL: 0
+>>

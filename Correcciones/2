@@ -1,0 +1,765 @@
+ln: failed to create symbolic link â€˜Makefileâ€™: File exists
+>> Práctica de Sistemas Operativos Distribuidos
+>> ============================================
+>> DMUTEX(Distributed Mutex)
+>> 
+>> Convocatoria:          Junio/Septiembre	2012-2013
+>> Fecha tope de entrega: 10 Junio
+>> Responsable:           José M. Peña (jmpena@fi.upm.es)
+
+======================> base_independientes <====================
+>> PRUEBA DE LAS FUNCIONALIDADES BÁSICAS (I - Independientes)
+>> Esta prueba consiste en tres ejecuciones de procesos independientes
+>> entre si. No hay mensajes ni peticiones de semáforos entre ellos.
+>> Fichero: UNPROCESO
+ALONE: EVENT
+ALONE: EVENT
+ALONE: EVENT
+ALONE: GETCLOCK
+>> Ejecutando: ./controlador UNPROCESO $TICK
+>> Comparando salidas
+>> Fichero: DOSPROCESOS
+FOO: EVENT
+FOO: EVENT
+BAA: EVENT
+FOO: GETCLOCK
+BAA: GETCLOCK
+FOO: EVENT
+BAA: EVENT
+FOO: GETCLOCK
+BAA: GETCLOCK
+>> Ejecutando: ./controlador DOSPROCESOS $TICK
+>> Comparando salidas
+>> Fichero: CUATROPROCESOS
+N: GETCLOCK
+S: GETCLOCK
+E: GETCLOCK
+W: GETCLOCK
+N: EVENT
+S: EVENT
+N: EVENT
+S: EVENT
+N: EVENT
+S: EVENT
+N: GETCLOCK
+S: GETCLOCK
+E: EVENT
+W: EVENT
+E: GETCLOCK
+W: GETCLOCK
+>> Ejecutando: ./controlador CUATROPROCESOS $TICK
+>> Comparando salidas
+======================> base_independientes <====================
+======================> base_mensajes <====================
+>> PRUEBA DE LAS FUNCIONALIDADES BÁSICAS (II - Mensajes)
+>> Esta prueba consiste en seis ejecuciones de procesos que intercambian
+>> mensajes entre sí.
+>> Fichero: UNOMISMO
+ALONE: EVENT
+ALONE: EVENT
+ALONE: EVENT
+ALONE: GETCLOCK
+ALONE: MESSAGETO ALONE
+ALONE: RECEIVE
+ALONE: GETCLOCK
+>> Ejecutando: ./controlador UNOMISMO $TICK
+>> Comparando salidas
+>> Fichero: DOSPROCESOS
+SNDR: EVENT
+SNDR: EVENT
+RECV: EVENT
+SNDR: GETCLOCK
+RECV: GETCLOCK
+SNDR: MESSAGETO RECV
+RECV: RECEIVE
+SNDR: GETCLOCK
+RECV: GETCLOCK
+>> Ejecutando: ./controlador DOSPROCESOS $TICK
+>> Comparando salidas
+>> Protolo entre cliente y servidor
+>> Fichero: PROTOCOLO1
+SRV: GETCLOCK
+CLI: GETCLOCK
+# El cliente procesa un dato
+CLI: EVENT
+# Ahora el cliente necesita solicitar una
+# operación
+CLI: MESSAGETO SRV
+SRV: RECEIVE
+# El servidor lo procesa
+SRV: EVENT
+SRV: EVENT
+# y transmite respuesta
+SRV: MESSAGETO CLI
+CLI: RECEIVE
+CLI: EVENT
+# Y termina
+SRV: GETCLOCK
+CLI: GETCLOCK
+>> Ejecutando: ./controlador PROTOCOLO1 $TICK
+>> Comparando salidas
+>> Protolo entre dos clientes y un servidor (secuencial)
+>> Fichero: PROTOCOLO2
+SRV: GETCLOCK
+CL1: GETCLOCK
+CL2: GETCLOCK
+# Petición y respuesta del primer cliente
+CL1: EVENT
+CL1: MESSAGETO SRV
+SRV: RECEIVE
+SRV: EVENT
+SRV: EVENT
+SRV: MESSAGETO CL1
+CL1: RECEIVE
+CL1: EVENT
+# El segundo cliente hace lo mismo
+CL2: EVENT
+CL2: MESSAGETO SRV
+SRV: RECEIVE
+SRV: EVENT
+SRV: EVENT
+SRV: MESSAGETO CL2
+CL2: RECEIVE
+CL2: EVENT
+# Y termina
+SRV: GETCLOCK
+CL1: GETCLOCK
+CL2: GETCLOCK
+>> Ejecutando: ./controlador PROTOCOLO2 $TICK
+>> Comparando salidas
+>> Cliente, proxy y servidor (secuencial)
+>> Fichero: PROTOCOLO3
+CLI: GETCLOCK
+PROXY: GETCLOCK
+SRV: GETCLOCK
+# [1] La primera petición no está en el
+#     proxy y éste la retransmite al servidor
+CLI: EVENT
+CLI: MESSAGETO PROXY
+PROXY: RECEIVE
+PROXY: EVENT
+# NO ESTÁ
+PROXY: MESSAGETO SRV
+SRV: RECEIVE
+SRV: MESSAGETO PROXY
+PROXY: RECEIVE
+PROXY: MESSAGETO CLI
+CLI: RECEIVE
+# [2] La segunda petición si está en el
+#     proxy (respuesta directa).
+CLI: EVENT
+CLI: MESSAGETO PROXY
+PROXY: RECEIVE
+PROXY: EVENT
+# SI ESTÁ
+PROXY: MESSAGETO CLI
+CLI: RECEIVE
+# FIN
+CLI: GETCLOCK
+PROXY: GETCLOCK
+SRV: GETCLOCK
+>> Ejecutando: ./controlador PROTOCOLO3 $TICK
+>> Comparando salidas
+>> Protolo entre dos clientes y un servidor (concurrente)
+>> Fichero: PROTOCOLO_CONC
+SRV: GETCLOCK
+CL1: GETCLOCK
+CL2: GETCLOCK
+# Petición en paralelo de ambos clientes:
+CL1: EVENT
+CL1: MESSAGETO SRV
+CL2: EVENT
+CL2: MESSAGETO SRV
+SRV: RECEIVE
+SRV: EVENT
+SRV: EVENT
+SRV: MESSAGETO CL1
+CL1: RECEIVE
+CL1: EVENT
+# El segundo recibe su respuesta
+SRV: RECEIVE
+SRV: EVENT
+SRV: EVENT
+SRV: MESSAGETO CL2
+CL2: RECEIVE
+CL2: EVENT
+# Y termina
+SRV: GETCLOCK
+CL1: GETCLOCK
+CL2: GETCLOCK
+>> Ejecutando: ./controlador PROTOCOLO_CONC $TICK
+>> Comparando salidas
+======================> base_mensajes <====================
+======================> opt_sin_bloqueo <====================
+>> PRUEBA DE LAS FUNCIONALIDADES OPCIONALES (I - Semáforos sin bloqueo)
+>> Esta prueba consiste en cinco ejecuciones de procesos que compiten
+>> por regiones de compartidas. Para sincronizar los elementos se utilizan
+>> semáforos para proteger las regiones de exclusión mútua.
+>> 
+>> En esta prueba NO SE HAN DE PRODUCIR bloqueos entre los solicitantes.
+>> Fichero: SENCILLO
+A: LOCK CERROJO
+B: RECEIVE
+A: RECEIVE
+# A tiene el cerrojo
+A: UNLOCK CERROJO
+>> Ejecutando: ./controlador SENCILLO $TICK
+>> Comparando salidas
+>> Fichero: CLISERV
+# El servidor es un recurso compartido, pero
+# sólo hay un cliente que lo solicite.
+# El semáforo que protege al servidor se denomina L
+CLI: EVENT
+# Antes de solicitar el servicio pide el semáforo
+CLI: LOCK L
+SRV: RECEIVE
+CLI: RECEIVE
+CLI: MESSAGETO SRV
+SRV: RECEIVE
+SRV: EVENT
+SRV: MESSAGETO CLI
+CLI: RECEIVE
+# Ahora se libera el cerrojo.
+CLI: UNLOCK L
+CLI: GETCLOCK
+SRV: GETCLOCK
+>> Ejecutando: ./controlador CLISERV $TICK
+>> Comparando salidas
+>> Fichero: CLICLISERV
+# El servidor es un recurso compartido, pero ahora
+# hay dos clientes que lo solicitan.
+# El semáforo que protege al servidor se denomina L
+CL1: EVENT
+CL2: EVENT
+# Antes de solicitar el servicio pide el semáforo
+CL1: LOCK L
+CL2: RECEIVE
+SRV: RECEIVE
+CL1: RECEIVE
+CL1: RECEIVE
+CL1: MESSAGETO SRV
+SRV: RECEIVE
+SRV: EVENT
+SRV: MESSAGETO CL1
+CL1: RECEIVE
+# Ahora se libera el cerrojo.
+CL1: UNLOCK L
+# Ahora lo hace le segundo cliente
+CL2: LOCK L
+SRV: RECEIVE
+CL2: RECEIVE
+CL1: RECEIVE
+CL2: RECEIVE
+CL2: MESSAGETO SRV
+SRV: RECEIVE
+SRV: EVENT
+SRV: MESSAGETO CL2
+CL2: RECEIVE
+# Ahora se libera el cerrojo.
+CL2: UNLOCK L
+CL1: GETCLOCK
+CL2: GETCLOCK
+SRV: GETCLOCK
+>> Ejecutando: ./controlador CLICLISERV $TICK
+>> Comparando salidas
+>> Fichero: D_LENTO
+# El semáforo SEM protege una región crítica 
+# entre cuatro procesos. El proceso D tarda en
+# recibir los mensajes.
+A: EVENT
+A: LOCK SEM
+B: RECEIVE
+C: RECEIVE
+A: RECEIVE
+A: RECEIVE
+B: EVENT
+B: MESSAGETO C
+C: RECEIVE
+C: EVENT
+C: EVENT
+D: RECEIVE
+A: RECEIVE
+A: EVENT
+A: EVENT
+A: EVENT
+A: UNLOCK SEM
+B: EVENT
+A: GETCLOCK
+B: GETCLOCK
+C: GETCLOCK
+D: GETCLOCK
+>> Ejecutando: ./controlador D_LENTO $TICK
+>> Comparando salidas
+>> Fichero: MSG_Y_LOCK
+A: MESSAGETO B
+A: MESSAGETO C
+B: LOCK SEM
+C: RECEIVE
+A: RECEIVE
+C: RECEIVE
+# Se reciben MSG(A), OK(A) y OK(C)
+B: RECEIVE
+B: RECEIVE
+B: RECEIVE
+B: EVENT
+B: UNLOCK SEM
+>> Ejecutando: ./controlador MSG_Y_LOCK $TICK
+>> Comparando salidas
+======================> opt_sin_bloqueo <====================
+======================> opt_con_bloqueo <====================
+>> PRUEBA DE LAS FUNCIONALIDADES OPCIONALES (II - Semáforos con bloqueo)
+>> Esta prueba consiste en cinco ejecuciones de procesos que compiten
+>> por regiones de compartidas. Para sincronizar los elementos se utilizan
+>> semáforos para proteger las regiones de exclusión mútua.
+>> 
+>> En esta prueba SE PRODUCIRÁN bloqueos entre los solicitantes.
+>> Comparación de prioridades
+>> Fichero: SENCILLO
+A: LOCK CERROJO
+B: RECEIVE
+# B Solicita el cerrojo
+B: LOCK CERROJO
+A: RECEIVE
+A: RECEIVE
+# A tiene el cerrojo
+A: UNLOCK CERROJO
+B: RECEIVE
+# B tiene el cerrojo
+B: UNLOCK CERROJO
+>> Ejecutando: ./controlador SENCILLO $TICK
+>> Comparando salidas
+>> Semáforo ya otorgado (espera finalización)
+>> Fichero: SENCILLO2
+A: LOCK CERROJO
+B: RECEIVE
+A: RECEIVE
+# B Solicita el cerrojo
+B: LOCK CERROJO
+A: RECEIVE
+# A tiene el cerrojo
+A: UNLOCK CERROJO
+B: RECEIVE
+# B tiene el cerrojo
+B: UNLOCK CERROJO
+>> Ejecutando: ./controlador SENCILLO2 $TICK
+>> Comparando salidas
+>> Fichero: PRIORIDAD_PID
+A: MESSAGETO C
+B: MESSAGETO C
+C: RECEIVE
+C: RECEIVE
+C: MESSAGETO A
+A: RECEIVE
+# Despues de una fase inicial los relojes
+# lógicos se han intercambiado.
+A: GETCLOCK
+B: GETCLOCK
+C: GETCLOCK
+# A y C compiten entre si.
+C: LOCK SEM
+A: LOCK SEM
+# Los dos eventos son concurrentes (no se
+# puede determinar precedencia). Gana A (por
+# tener menor número de proceso).
+# B (OK a los dos)
+B: RECEIVE
+B: RECEIVE
+# A no responde a C.
+A: RECEIVE
+# C Responde OK a A
+C: RECEIVE
+# A Recibe todos los OK (B y C: Entra)
+A: RECEIVE
+A: RECEIVE
+A: EVENT
+A: UNLOCK SEM
+# C Recibe todos los OK (B y A: Entra)
+C: RECEIVE
+C: RECEIVE
+C: UNLOCK SEM
+A: GETCLOCK
+B: GETCLOCK
+C: GETCLOCK
+>> Ejecutando: ./controlador PRIORIDAD_PID $TICK
+>> Comparando salidas
+>> A: [MESSAGETO C]-> A{TICK|SEND(MSG,C)} B{--} C{--}				      <
+>> B: [MESSAGETO C]-> A{--} B{TICK|SEND(MSG,C)} C{--}				      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(MSG,A)|TICK}				      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(MSG,B)|TICK}				      <
+>> C: [MESSAGETO A]-> A{--} B{--} C{TICK|SEND(MSG,A)}				      <
+>> A: [RECEIVE]-> A{RECEIVE(MSG,C)|TICK} B{--} C{--}				      <
+>> # Despues de una fase inicial los relojes					      <
+>> # lógicos se han intercambiado.							      <
+>> A: [GETCLOCK]-> A{LC[2,1,3]} B{--} C{--}					      <
+>> B: [GETCLOCK]-> A{--} B{LC[0,1,0]} C{--}					      <
+>> C: [GETCLOCK]-> A{--} B{--} C{LC[1,1,3]}					      <
+>> # A y C compiten entre si.							      <
+>> C: [LOCK SEM]-> A{--} B{--} C{TICK|SEND(LOCK,A)|SEND(LOCK,B)}			      <
+>> A: [LOCK SEM]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)} B{--} C{--}			      <
+>> # Los dos eventos son concurrentes (no se					      <
+>> # puede determinar precedencia). Gana A (por					      <
+>> # tener menor número de proceso).						      <
+>> # B (OK a los dos)								      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,C)|TICK|TICK|SEND(OK,C)} C{--}		      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--}		      <
+>> # A no responde a C.								      <
+>> A: [RECEIVE]-> A{RECEIVE(LOCK,C)|TICK} B{--} C{--}				      <
+>> # C Responde OK a A								      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}		      <
+>> # A Recibe todos los OK (B y C: Entra)						      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK} B{--} C{--}				      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,C)|TICK|MUTEX(SEM)} B{--} C{--}			      <
+>> A: [EVENT]-> A{TICK} B{--} C{--}						      <
+>> A: [UNLOCK SEM]-> A{TICK|SEND(OK,C)} B{--} C{--}				      <
+>> # C Recibe todos los OK (B y A: Entra)						      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,B)|TICK}				      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,A)|TICK|MUTEX(SEM)}			      <
+>> C: [UNLOCK SEM]-> A{--} B{--} C{--}						      <
+>> A: [GETCLOCK]-> A{LC[8,5,6]} B{--} C{--}					      <
+>> B: [GETCLOCK]-> A{--} B{LC[3,5,4]} C{--}					      <
+>> C: [GETCLOCK]-> A{--} B{--} C{LC[8,5,8]}					      <
+>> Si el siguiente ejemplo no considera de forma correcta la
+>> prioridad de los relojes lógicos uno de los procesos
+>> sufrirá de inanición.
+>> Fichero: INANICION
+A: EVENT
+B: EVENT
+C: LOCK SEM
+C: GETCLOCK
+A: LOCK SEM
+# Por prioridad de PID entraría A 
+C: RECEIVE
+A: RECEIVE
+A: RECEIVE
+# B Responde OK a A y C
+B: RECEIVE
+B: RECEIVE
+A: RECEIVE
+C: RECEIVE
+# A obtiene el semaforo
+B: LOCK SEM
+B: GETCLOCK
+# C recibirá el mensaje pero no 
+# respondera (C tiene prioridad)
+C: RECEIVE
+# A termina 
+A: UNLOCK SEM
+# A daría paso a C
+A: RECEIVE
+C: RECEIVE
+# C entra en la región
+C: UNLOCK SEM
+B: RECEIVE
+B: RECEIVE
+B: UNLOCK SEM
+>> Ejecutando: ./controlador INANICION $TICK
+>> Comparando salidas
+>> A: [EVENT]-> A{TICK} B{--} C{--}							A: [EVENT]-> A{TICK} B{--} C{--}
+>> B: [EVENT]-> A{--} B{TICK} C{--}							B: [EVENT]-> A{--} B{TICK} C{--}
+>> C: [LOCK SEM]-> A{--} B{--} C{TICK|SEND(LOCK,A)|SEND(LOCK,B)}				C: [LOCK SEM]-> A{--} B{--} C{TICK|SEND(LOCK,A)|SEND(LOCK,B)}
+>> C: [GETCLOCK]-> A{--} B{--} C{LC[0,0,1]}						C: [GETCLOCK]-> A{--} B{--} C{LC[0,0,1]}
+>> A: [LOCK SEM]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)} B{--} C{--}				A: [LOCK SEM]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)} B{--} C{--}
+>> # Por prioridad de PID entraría A 							# Por prioridad de PID entraría A 
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}		      |	C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK}
+>> A: [RECEIVE]-> A{RECEIVE(LOCK,C)|TICK} B{--} C{--}					A: [RECEIVE]-> A{RECEIVE(LOCK,C)|TICK} B{--} C{--}
+>> A: [RECEIVE]-> A{RECEIVE(OK,C)|TICK} B{--} C{--}				      |	A: [RECEIVE]-> A{--} B{--} C{--}
+>> # B Responde OK a A y C									# B Responde OK a A y C
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,C)|TICK|TICK|SEND(OK,C)} C{--}			B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,C)|TICK|TICK|SEND(OK,C)} C{--}
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--}		      |	B: [RECEIVE]-> A{RECEIVE(OK,B)|TICK} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--}
+>> A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK|MUTEX(SEM)} B{--} C{--}			      |	A: [RECEIVE]-> A{--} B{--} C{--}
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,B)|TICK}					C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,B)|TICK}
+>> # A obtiene el semaforo									# A obtiene el semaforo
+>> B: [LOCK SEM]-> A{--} B{TICK|SEND(LOCK,A)|SEND(LOCK,C)} C{--}			      |	B: [LOCK SEM]-> A{RECEIVE(LOCK,B)|TICK} B{TICK|SEND(LOCK,A)|SEND(LOCK,C)} C{--}
+>> B: [GETCLOCK]-> A{--} B{LC[2,6,1]} C{--}						B: [GETCLOCK]-> A{--} B{LC[2,6,1]} C{--}
+>> # C recibirá el mensaje pero no 								# C recibirá el mensaje pero no 
+>> # respondera (C tiene prioridad)							# respondera (C tiene prioridad)
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,B)|TICK}					C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,B)|TICK}
+>> # A termina 										# A termina 
+>> A: [UNLOCK SEM]-> A{TICK|SEND(OK,C)} B{--} C{--}				      |	A: [UNLOCK SEM]-> A{TICK|SEND(OK,C)|TICK|SEND(OK,B)} B{--} C{--}
+>> # A daría paso a C									# A daría paso a C
+>> A: [RECEIVE]-> A{RECEIVE(LOCK,B)|TICK|TICK|SEND(OK,B)} B{--} C{--}		      |	A: [RECEIVE]-> A{--} B{--} C{--}
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,A)|TICK|MUTEX(SEM)}				C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,A)|TICK|MUTEX(SEM)}
+>> # C entra en la región									# C entra en la región
+>> C: [UNLOCK SEM]-> A{--} B{--} C{TICK|SEND(OK,B)}				      |	C: [UNLOCK SEM]-> A{RECEIVE(OK,C)|TICK|MUTEX(SEM)} B{--} C{TICK|SEND(OK,A)|TICK|SEND(
+>> B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK} C{--}					B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK} C{--}
+>> B: [RECEIVE]-> A{--} B{RECEIVE(OK,C)|TICK|MUTEX(SEM)} C{--}				B: [RECEIVE]-> A{--} B{RECEIVE(OK,C)|TICK|MUTEX(SEM)} C{--}
+>> B: [UNLOCK SEM]-> A{--} B{--} C{--}							B: [UNLOCK SEM]-> A{--} B{--} C{--}
+>> Este caso es similar al anterior, pero en esta situción un
+>> proceso entra dentro de la región crítica y recibe una petición
+>> de un nuevo proceso. Esto hace que al liberar el semáforo se
+>> deban emitir varios mensajes a los que esperan entrar en la
+>> región.
+>> 
+>> En este caso se da dos condiciones para no responder a una
+>> petición de LOCK, estas son:
+>> 1) un proceso recibe un mensaje cuando está en la región crítica.
+>> 2) la comparación de dos reloges lógicos determina la prioridad.
+>> Fichero: INANICION2
+A: EVENT
+B: EVENT
+C: LOCK SEM
+C: GETCLOCK
+A: LOCK SEM
+# B Responde OK a A y C
+B: RECEIVE
+B: RECEIVE
+# Por prioridad de PID entraría A 
+C: RECEIVE
+# A recibiría:
+# - LOCK(C) -> encola petición
+# - OK(B) y OK(C) -> cierra mutex
+# A obtiene el semaforo
+A: RECEIVE
+A: RECEIVE
+A: RECEIVE
+# C recibe el OK de B (falt A que esta en la
+# región crítica).
+C: RECEIVE
+# Ahora B tambien quiere entrar en la región.
+B: LOCK SEM
+B: GETCLOCK
+# C recibirá el mensaje pero no 
+# respondera (C tiene prioridad) -> encola pecición.
+C: RECEIVE
+# A no responde porque está en la 
+# región crítica (encola la petición) 
+A: RECEIVE
+# A termina (debe liberar los dos mensajes que tiene
+# encolados a esperas de entrar en la región).
+A: UNLOCK SEM
+C: RECEIVE
+B: RECEIVE
+# C entra en la región
+C: UNLOCK SEM
+B: RECEIVE
+B: UNLOCK SEM
+>> Ejecutando: ./controlador INANICION2 $TICK
+>> Comparando salidas
+>> A: [EVENT]-> A{TICK} B{--} C{--}						      <
+>> B: [EVENT]-> A{--} B{TICK} C{--}						      <
+>> C: [LOCK SEM]-> A{--} B{--} C{TICK|SEND(LOCK,A)|SEND(LOCK,B)}			      <
+>> C: [GETCLOCK]-> A{--} B{--} C{LC[0,0,1]}					      <
+>> A: [LOCK SEM]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)} B{--} C{--}			      <
+>> # B Responde OK a A y C								      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,C)|TICK|TICK|SEND(OK,C)} C{--}		      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--}		      <
+>> # Por prioridad de PID entraría A 						      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}		      <
+>> # A recibiría:									      <
+>> # - LOCK(C) -> encola petición							      <
+>> # - OK(B) y OK(C) -> cierra mutex						      <
+>> # A obtiene el semaforo								      <
+>> A: [RECEIVE]-> A{RECEIVE(LOCK,C)|TICK} B{--} C{--}				      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK} B{--} C{--}				      <
+>> A: [RECEIVE]-> A{RECEIVE(OK,C)|TICK|MUTEX(SEM)} B{--} C{--}			      <
+>> # C recibe el OK de B (falt A que esta en la					      <
+>> # región crítica).								      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,B)|TICK}				      <
+>> # Ahora B tambien quiere entrar en la región.					      <
+>> B: [LOCK SEM]-> A{--} B{TICK|SEND(LOCK,A)|SEND(LOCK,C)} C{--}			      <
+>> B: [GETCLOCK]-> A{--} B{LC[2,6,1]} C{--}					      <
+>> # C recibirá el mensaje pero no 							      <
+>> # respondera (C tiene prioridad) -> encola pecición.				      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,B)|TICK}				      <
+>> # A no responde porque está en la 						      <
+>> # región crítica (encola la petición) 						      <
+>> A: [RECEIVE]-> A{RECEIVE(LOCK,B)|TICK} B{--} C{--}				      <
+>> # A termina (debe liberar los dos mensajes que tiene				      <
+>> # encolados a esperas de entrar en la región).					      <
+>> A: [UNLOCK SEM]-> A{TICK|SEND(OK,C)|TICK|SEND(OK,B)} B{--} C{--}		      <
+>> C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,A)|TICK|MUTEX(SEM)}			      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK} C{--}				      <
+>> # C entra en la región								      <
+>> C: [UNLOCK SEM]-> A{--} B{--} C{TICK|SEND(OK,B)}				      <
+>> B: [RECEIVE]-> A{--} B{RECEIVE(OK,C)|TICK|MUTEX(SEM)} C{--}			      <
+>> B: [UNLOCK SEM]-> A{--} B{--} C{--}						      <
+======================> opt_con_bloqueo <====================
+>>>>>>>>>>>>>>   *********
+>>>>>>>>>>>>>>   * ERROR *
+>>>>>>>>>>>>>>   *********
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> A: [MESSAGETO C]-> A{TICK|SEND(MSG,C)} B{--} C{--}				      <
+B: [MESSAGETO C]-> A{--} B{TICK|SEND(MSG,C)} C{--}				      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(MSG,A)|TICK}				      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(MSG,B)|TICK}				      <
+C: [MESSAGETO A]-> A{--} B{--} C{TICK|SEND(MSG,A)}				      <
+A: [RECEIVE]-> A{RECEIVE(MSG,C)|TICK} B{--} C{--}				      <
+# Despues de una fase inicial los relojes					      <
+# lógicos se han intercambiado.							      <
+A: [GETCLOCK]-> A{LC[2,1,3]} B{--} C{--}					      <
+B: [GETCLOCK]-> A{--} B{LC[0,1,0]} C{--}					      <
+C: [GETCLOCK]-> A{--} B{--} C{LC[1,1,3]}					      <
+# A y C compiten entre si.							      <
+C: [LOCK SEM]-> A{--} B{--} C{TICK|SEND(LOCK,A)|SEND(LOCK,B)}			      <
+A: [LOCK SEM]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)} B{--} C{--}			      <
+# Los dos eventos son concurrentes (no se					      <
+# puede determinar precedencia). Gana A (por					      <
+# tener menor número de proceso).						      <
+# B (OK a los dos)								      <
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,C)|TICK|TICK|SEND(OK,C)} C{--}		      <
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--}		      <
+# A no responde a C.								      <
+A: [RECEIVE]-> A{RECEIVE(LOCK,C)|TICK} B{--} C{--}				      <
+# C Responde OK a A								      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}		      <
+# A Recibe todos los OK (B y C: Entra)						      <
+A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK} B{--} C{--}				      <
+A: [RECEIVE]-> A{RECEIVE(OK,C)|TICK|MUTEX(SEM)} B{--} C{--}			      <
+A: [EVENT]-> A{TICK} B{--} C{--}						      <
+A: [UNLOCK SEM]-> A{TICK|SEND(OK,C)} B{--} C{--}				      <
+# C Recibe todos los OK (B y A: Entra)						      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,B)|TICK}				      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,A)|TICK|MUTEX(SEM)}			      <
+C: [UNLOCK SEM]-> A{--} B{--} C{--}						      <
+A: [GETCLOCK]-> A{LC[8,5,6]} B{--} C{--}					      <
+B: [GETCLOCK]-> A{--} B{LC[3,5,4]} C{--}					      <
+C: [GETCLOCK]-> A{--} B{--} C{LC[8,5,8]}					      <
+A: [EVENT]-> A{TICK} B{--} C{--}							A: [EVENT]-> A{TICK} B{--} C{--}
+B: [EVENT]-> A{--} B{TICK} C{--}							B: [EVENT]-> A{--} B{TICK} C{--}
+C: [LOCK SEM]-> A{--} B{--} C{TICK|SEND(LOCK,A)|SEND(LOCK,B)}				C: [LOCK SEM]-> A{--} B{--} C{TICK|SEND(LOCK,A)|SEND(LOCK,B)}
+C: [GETCLOCK]-> A{--} B{--} C{LC[0,0,1]}						C: [GETCLOCK]-> A{--} B{--} C{LC[0,0,1]}
+A: [LOCK SEM]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)} B{--} C{--}				A: [LOCK SEM]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)} B{--} C{--}
+# Por prioridad de PID entraría A 							# Por prioridad de PID entraría A 
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}		      |	C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK}
+A: [RECEIVE]-> A{RECEIVE(LOCK,C)|TICK} B{--} C{--}					A: [RECEIVE]-> A{RECEIVE(LOCK,C)|TICK} B{--} C{--}
+A: [RECEIVE]-> A{RECEIVE(OK,C)|TICK} B{--} C{--}				      |	A: [RECEIVE]-> A{--} B{--} C{--}
+# B Responde OK a A y C									# B Responde OK a A y C
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,C)|TICK|TICK|SEND(OK,C)} C{--}			B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,C)|TICK|TICK|SEND(OK,C)} C{--}
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--}		      |	B: [RECEIVE]-> A{RECEIVE(OK,B)|TICK} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--}
+A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK|MUTEX(SEM)} B{--} C{--}			      |	A: [RECEIVE]-> A{--} B{--} C{--}
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,B)|TICK}					C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,B)|TICK}
+# A obtiene el semaforo									# A obtiene el semaforo
+B: [LOCK SEM]-> A{--} B{TICK|SEND(LOCK,A)|SEND(LOCK,C)} C{--}			      |	B: [LOCK SEM]-> A{RECEIVE(LOCK,B)|TICK} B{TICK|SEND(LOCK,A)|SEND(LOCK,C)} C{--}
+B: [GETCLOCK]-> A{--} B{LC[2,6,1]} C{--}						B: [GETCLOCK]-> A{--} B{LC[2,6,1]} C{--}
+# C recibirá el mensaje pero no 								# C recibirá el mensaje pero no 
+# respondera (C tiene prioridad)							# respondera (C tiene prioridad)
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,B)|TICK}					C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,B)|TICK}
+# A termina 										# A termina 
+A: [UNLOCK SEM]-> A{TICK|SEND(OK,C)} B{--} C{--}				      |	A: [UNLOCK SEM]-> A{TICK|SEND(OK,C)|TICK|SEND(OK,B)} B{--} C{--}
+# A daría paso a C									# A daría paso a C
+A: [RECEIVE]-> A{RECEIVE(LOCK,B)|TICK|TICK|SEND(OK,B)} B{--} C{--}		      |	A: [RECEIVE]-> A{--} B{--} C{--}
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,A)|TICK|MUTEX(SEM)}				C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,A)|TICK|MUTEX(SEM)}
+# C entra en la región									# C entra en la región
+C: [UNLOCK SEM]-> A{--} B{--} C{TICK|SEND(OK,B)}				      |	C: [UNLOCK SEM]-> A{RECEIVE(OK,C)|TICK|MUTEX(SEM)} B{--} C{TICK|SEND(OK,A)|TICK|SEND(
+B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK} C{--}					B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK} C{--}
+B: [RECEIVE]-> A{--} B{RECEIVE(OK,C)|TICK|MUTEX(SEM)} C{--}				B: [RECEIVE]-> A{--} B{RECEIVE(OK,C)|TICK|MUTEX(SEM)} C{--}
+B: [UNLOCK SEM]-> A{--} B{--} C{--}							B: [UNLOCK SEM]-> A{--} B{--} C{--}
+A: [EVENT]-> A{TICK} B{--} C{--}						      <
+B: [EVENT]-> A{--} B{TICK} C{--}						      <
+C: [LOCK SEM]-> A{--} B{--} C{TICK|SEND(LOCK,A)|SEND(LOCK,B)}			      <
+C: [GETCLOCK]-> A{--} B{--} C{LC[0,0,1]}					      <
+A: [LOCK SEM]-> A{TICK|SEND(LOCK,B)|SEND(LOCK,C)} B{--} C{--}			      <
+# B Responde OK a A y C								      <
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,C)|TICK|TICK|SEND(OK,C)} C{--}		      <
+B: [RECEIVE]-> A{--} B{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)} C{--}		      <
+# Por prioridad de PID entraría A 						      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,A)|TICK|TICK|SEND(OK,A)}		      <
+# A recibiría:									      <
+# - LOCK(C) -> encola petición							      <
+# - OK(B) y OK(C) -> cierra mutex						      <
+# A obtiene el semaforo								      <
+A: [RECEIVE]-> A{RECEIVE(LOCK,C)|TICK} B{--} C{--}				      <
+A: [RECEIVE]-> A{RECEIVE(OK,B)|TICK} B{--} C{--}				      <
+A: [RECEIVE]-> A{RECEIVE(OK,C)|TICK|MUTEX(SEM)} B{--} C{--}			      <
+# C recibe el OK de B (falt A que esta en la					      <
+# región crítica).								      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,B)|TICK}				      <
+# Ahora B tambien quiere entrar en la región.					      <
+B: [LOCK SEM]-> A{--} B{TICK|SEND(LOCK,A)|SEND(LOCK,C)} C{--}			      <
+B: [GETCLOCK]-> A{--} B{LC[2,6,1]} C{--}					      <
+# C recibirá el mensaje pero no 							      <
+# respondera (C tiene prioridad) -> encola pecición.				      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(LOCK,B)|TICK}				      <
+# A no responde porque está en la 						      <
+# región crítica (encola la petición) 						      <
+A: [RECEIVE]-> A{RECEIVE(LOCK,B)|TICK} B{--} C{--}				      <
+# A termina (debe liberar los dos mensajes que tiene				      <
+# encolados a esperas de entrar en la región).					      <
+A: [UNLOCK SEM]-> A{TICK|SEND(OK,C)|TICK|SEND(OK,B)} B{--} C{--}		      <
+C: [RECEIVE]-> A{--} B{--} C{RECEIVE(OK,A)|TICK|MUTEX(SEM)}			      <
+B: [RECEIVE]-> A{--} B{RECEIVE(OK,A)|TICK} C{--}				      <
+# C entra en la región								      <
+C: [UNLOCK SEM]-> A{--} B{--} C{TICK|SEND(OK,B)}				      <
+B: [RECEIVE]-> A{--} B{RECEIVE(OK,C)|TICK|MUTEX(SEM)} C{--}			      <
+B: [UNLOCK SEM]-> A{--} B{--} C{--}						      <
+
+>>>>>>>>>>>>>> El formato de salida no es el esperado
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> PROGRAMA:       ./controlador INANICION2 $TICK
+>>>>>>>>>>>>>> MANDATO/OPCIÓN: -
+>>>>>>>>>>>>>> SALIDA ESTÁNDAR:
+>>>>>>>>>>>>>> ERROR ESTÁNDAR:
+>>>>>>>>>>>>>>
+======================> extra_multisemaforo <====================
+>> PRUEBA DE LAS FUNCIONALIDADES OPCIONALES (III - Varios semáforos)
+>> Esta prueba consiste en un ejemplo sencillo con varios semáforos.
+>> Se utilizarán tres semaforos S1, S2 y S3
+>> Fichero: MUTISEMAFORO
+A: EVENT
+B: EVENT
+C: EVENT
+# A solicita los semaforos S1 y S2
+A: LOCK S1
+A: GETCLOCK
+A: LOCK S2
+A: GETCLOCK
+# B Concede los dos semaforos
+B: RECEIVE
+B: RECEIVE
+A: RECEIVE
+A: RECEIVE
+# C Concede los dos semaforos
+C: RECEIVE
+C: RECEIVE
+A: RECEIVE
+A: RECEIVE
+# A consigue S1 y S2
+A: EVENT
+# B y C solicitan S3 y S2 (respectivamente)
+B: LOCK S3
+B: GETCLOCK
+C: LOCK S2
+C: GETCLOCK
+A: RECEIVE
+A: RECEIVE
+B: RECEIVE
+C: RECEIVE
+# C recibe sólo un OK (falta A)
+C: RECEIVE
+# B consigue S3 porque está libre
+B: RECEIVE
+B: RECEIVE
+B: EVENT
+# B libera el semáforo S3 y solicita S2
+B: UNLOCK S3
+B: LOCK S2
+B: GETCLOCK
+A: RECEIVE
+C: RECEIVE
+# A libera los dos semaforos
+A: UNLOCK S1
+A: UNLOCK S2
+B: RECEIVE
+C: RECEIVE
+# Entra C que estaba esperando con anterioridad.
+C: UNLOCK S2
+# C libera S2 y entra B
+B: RECEIVE
+B: UNLOCK S2
+>> Ejecutando: ./controlador MUTISEMAFORO $TICK
+>> Comparando salidas
+======================> extra_multisemaforo <====================
+>>
+>>
+>> RESUMEN DE RESULTADO DE PRUEBAS
+>>
+>> Valor Prueba                 Resultado
+>> ----- ---------------------- -----------------------------
+>>  (15) base_independientes    OK +15/+15
+>>  (25) base_mensajes          OK +25/+25
+>>  (15) opt_sin_bloqueo        OK +15/+15
+>>  (25) opt_con_bloqueo        ERROR: El formato de salida no es el esperado +10/+25
+>>  (20) extra_multisemaforo    OK +20/+20
+>>
+>> NOTA FINAL: 85
+>>
